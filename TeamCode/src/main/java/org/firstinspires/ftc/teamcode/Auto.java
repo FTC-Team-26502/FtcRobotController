@@ -20,7 +20,6 @@ public class Auto {
     double closeright;
     double closeleft;
 
-    @Override
     public void init() {
         //Set up objects(DC Motors)
         backLeft = hardwareMap.get(DcMotor.class, "back left");
