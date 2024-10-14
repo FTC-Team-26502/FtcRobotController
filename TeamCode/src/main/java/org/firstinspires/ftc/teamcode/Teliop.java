@@ -16,14 +16,9 @@ public class Teliop extends OpMode {
     DcMotor frontLeft;
     DcMotor frontRight;
     DcMotor backRight;
-    DcMotor arm;
-    Servo servoTires;
-    Servo servoTwister;
-    double SERVO_OPEN_POSITION = 0;
-    double SERVO_CLOSED_POSITION = 1;
-    double TWISTER_POSITION_UP = 0;
-    double TWISTER_POSITION_DOWN = 0.5;
-
+//    DcMotor arm;
+//    Servo servoTires;
+//    Servo servoTwister;
     @Override
     public void init() {
         //Set up objects(DC Motors)
@@ -31,9 +26,9 @@ public class Teliop extends OpMode {
         frontLeft = hardwareMap.get(DcMotor.class, "front left");
         frontRight = hardwareMap.get(DcMotor.class, "front right");
         backRight = hardwareMap.get(DcMotor.class, "back right");
-        servoTires = hardwareMap.get(Servo.class, "claw right");
-        servoTwister = hardwareMap.get(Servo.class, "claw left");
-        arm = hardwareMap.get(DcMotor.class, "arm");
+//        servoTires = hardwareMap.get(Servo.class, "claw right");
+//        servoTwister = hardwareMap.get(Servo.class, "claw left");
+//        arm = hardwareMap.get(DcMotor.class, "arm");
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
 
@@ -44,57 +39,44 @@ public class Teliop extends OpMode {
 
     @Override
     public void loop() {
-        // check to see if we need to move the servo.
-
-//        double x = gamepad1.left_stick_x;  // Left/right movement
-//        double y = -gamepad1.left_stick_y;
-//
-//        backLeft.setPower(y);
-//        frontLeft.setPower(y);
-//        frontRight.setPower(y);
-//        backRight.setPower(y);
-//        backLeft.setPower(x);
-//        frontLeft.setPower(x);
-//        frontRight.setPower(x);
-//        backRight.setPower(x);
-//       /* double turnx = (gamepad1.right_stick_x);
-//        backLeft.setPower(-turnx);
-//        frontLeft.setPower(-turnx);
-//        frontRight.setPower(-turnx);
-//        backRight.setPower(-turnx);*/
 
         //Get values from controller
-        double forward = -gamepad1.left_stick_y;  // Forward/backward
-        double sideways = gamepad1.left_stick_x;
-
-        // Calculate motor powers
-        double frontLeftPower = forward + sideways;
-        double frontRightPower = forward - sideways;
-        double backLeftPower = forward - sideways;
-        double backRightPower = forward + sideways;
-
-        //Move the motors with powers
-        frontLeft.setPower(frontLeftPower);
-        frontRight.setPower(frontRightPower);
-        backLeft.setPower(backLeftPower);
-        backRight.setPower(backRightPower);
-
-        double armMove = gamepad1.left_trigger - gamepad1.right_trigger;
-        arm.setPower(armMove);
+        double speedx = (gamepad1.left_stick_x) * 3;
+        double speedy = (gamepad1.left_stick_y) * 3;
+        backLeft.setPower(speedy);
+        frontLeft.setPower(speedy);
+        frontRight.setPower(speedy);
+        backRight.setPower(speedy);
+        backLeft.setPower(-speedx);
+        frontLeft.setPower(speedx);
+        frontRight.setPower(speedx);
+        backRight.setPower(-speedx);
+        double turn1 = (gamepad1.right_stick_y) * 3;
+        backLeft.setPower(turn1);
+        frontLeft.setPower(-turn1);
+        frontRight.setPower(turn1);
+        backRight.setPower(-turn1);
 
 
-        if (gamepad1.a) {
-            servoTires.setPosition(100);
 
-        } else if (gamepad1.b) {
-            servoTires.setPosition(SERVO_CLOSED_POSITION);
-        }
-
-        if (gamepad1.x) {
-            servoTwister.setPosition(100);
-        } else if (gamepad1.y) {
-            servoTwister.setPosition(TWISTER_POSITION_DOWN);
-        }
+        //Move the arm Up and down
+//        double armMove = gamepad1.left_trigger - gamepad1.right_trigger;
+//        arm.setPower(armMove);
+//
+//        //Move Tires
+//        if (gamepad1.a) {
+//            servoTires.setPosition(100);
+//
+//        } else if (gamepad1.b) {
+//            servoTires.setPosition(0);
+//        }
+//
+//        //Move Twister
+//        if (gamepad1.x) {
+//            servoTwister.setPosition(100);
+//        } else if (gamepad1.y) {
+//            servoTwister.setPosition(0);
+//        }
 
 
     }

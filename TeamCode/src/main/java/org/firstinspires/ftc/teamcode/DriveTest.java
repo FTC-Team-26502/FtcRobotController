@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp
 public class DriveTest extends OpMode {
@@ -13,6 +15,9 @@ public class DriveTest extends OpMode {
     DcMotor frontLeft;
     DcMotor frontRight;
     DcMotor backRight;
+    Servo bin;
+//    DcMotor viperLeft;
+//    DcMotor viperRight;
     @Override
     public void init() {
         //Set up objects(DC Motors)
@@ -20,58 +25,80 @@ public class DriveTest extends OpMode {
         frontLeft= hardwareMap.get(DcMotor.class, "front left");
         frontRight= hardwareMap.get(DcMotor.class, "front right");
         backRight= hardwareMap.get(DcMotor.class, "back right");
+//        bin = hardwareMap.get(Servo.class,"bin");
+//        viperLeft=hardwareMap.get(DcMotor.class,"viper1");
+//        viperRight=hardwareMap.get(DcMotor.class,"viper2");
+//        viperRight.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     @Override
     public void loop() {
         // Use gamepad input to control motor
-        speed=gamepad1.left_stick_x;
-        if(gamepad1.y){
-            backLeft.setPower(-speed);
-            frontLeft.setPower(-speed);
-            frontRight.setPower(speed);
-            backRight.setPower(speed);
+        double speedx=gamepad1.left_stick_x;
+        backRight.setPower(-speedx);
+        backLeft.setPower(-speedx);
+        frontLeft.setPower(-speedx);
+        frontRight.setPower(speedx);
 
-        }
-        else if(gamepad1.a){
-            backLeft.setPower(speed);
-            frontLeft.setPower(speed);
-            frontRight.setPower(-speed);
-            backRight.setPower(-speed);
-        }
+        double speedy=gamepad1.left_stick_y;
+        backRight.setPower(speedy);
+        backLeft.setPower(-speedy);
+        frontLeft.setPower(speedy);
+        frontRight.setPower(speedy);
 
-        else if(gamepad1.x){
-            backLeft.setPower(-speed);
-            frontLeft.setPower(speed);
-            frontRight.setPower(speed);
-            backRight.setPower(-speed);
-        }
-        else if(gamepad1.b){
-            backLeft.setPower(speed);
-            frontLeft.setPower(-speed);
-            frontRight.setPower(-speed);
-            backRight.setPower(speed);
+        double turn=gamepad1.right_stick_x;
+        backRight.setPower(-turn);
+        backLeft.setPower(turn);
+        frontLeft.setPower(turn);
+        frontRight.setPower(-turn);
 
-        }
-        else if(gamepad1.dpad_right){
-            backLeft.setPower(-speed);
-            frontLeft.setPower(-speed);
-            frontRight.setPower(-speed);
-            backRight.setPower(-speed);
-        }
-        else if(gamepad1.dpad_left){
-            backLeft.setPower(speed);
-            frontLeft.setPower(speed);
-            frontRight.setPower(speed);
-            backRight.setPower(speed);
-        }
+//        if (gamepad1.a){
+//            bin.setPosition(0);
+//        } else if (gamepad1.x) {
+//            bin.setPosition(90);
+//        }
 
-        else{
-            //set power back to zero
-            backLeft.setPower(0);
-            frontLeft.setPower(0);
-            frontRight.setPower(0);
-            backRight.setPower(0);
-        }
+
+//        double vipers=gamepad1.left_trigger - gamepad1.right_trigger;
+//        viperLeft.setPower(vipers);
+//        viperRight.setPower(vipers);
+//
+//        double armMovement =
+
+
+//        else if(gamepad1.a){
+//            backLeft.setPower(speed);
+//            frontLeft.setPower(speed);
+//            frontRight.setPower(-speed);
+//            backRight.setPower(-speed);
+//        }
+//
+//        else if(gamepad1.x){
+//            backLeft.setPower(-speed);
+//            frontLeft.setPower(-speed);
+//            frontRight.setPower(speed);
+//            backRight.setPower(speed);
+//        }
+//        else if(gamepad1.b){
+//            backLeft.setPower(speed);
+//            frontLeft.setPower(-speed);
+//            frontRight.setPower(speed);
+//            backRight.setPower(-speed);
+//
+//        }
+//        else if(gamepad1.dpad_right){
+//            backLeft.setPower(-speed);
+//            frontLeft.setPower(-speed);
+//            frontRight.setPower(-speed);
+//            backRight.setPower(-speed);
+//        }
+//        else if(gamepad1.dpad_left){
+//            backLeft.setPower(speed);
+//            frontLeft.setPower(speed);
+//            frontRight.setPower(speed);
+//            backRight.setPower(speed);
+//        }
+
+
     }
 }
