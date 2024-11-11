@@ -38,4 +38,6 @@ public class     Auto {
         frontRight.setPower(power);
 
     }
+
+
 }
