@@ -33,10 +33,10 @@ public class FirstCompTele extends OpMode {
 
     @Override
     public void loop() {
-        double backLeftPower = gamepad1.left_stick_x + gamepad1.left_stick_y*13;
+        double backLeftPower = gamepad1.left_stick_x + gamepad1.left_stick_y*15;
         double frontLeftPower = -gamepad1.left_stick_x - gamepad1.left_stick_y;
-        double backRightPower = gamepad1.left_stick_x - gamepad1.left_stick_y;
-        double frontRightPower = -gamepad1.left_stick_x +  gamepad1.left_stick_y*13;
+        double backRightPower = gamepad1.left_stick_x - gamepad1.left_stick_y*15;
+        double frontRightPower = -gamepad1.left_stick_x +  gamepad1.left_stick_y;
 
         backLeft.setPower(backLeftPower);
         frontLeft.setPower(frontLeftPower);
