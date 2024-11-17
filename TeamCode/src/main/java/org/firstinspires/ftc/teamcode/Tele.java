@@ -20,6 +20,9 @@ public class FirstCompTele extends LinearOpMode{
     private DcMotor viper = null;
     private DcMotor arm = null;
 
+    private Servo intake = null;
+    private Servo twist = null;
+
     @Override
     public void runOpMode() {
 
@@ -32,10 +35,16 @@ public class FirstCompTele extends LinearOpMode{
         viper = hardwareMap.get(DcMotor.class, "viper");
         arm = hardwareMap.get(DcMotor.class, "arm");
 
+        intake = hardwareMap.get(Servo.class, "intake");
+        twist = hardwareMap.get(Servo.class, "twist");
+
+
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        viper.setDirection(DcMotor.Direction.FORWARD);
+        arm.setDirection(DcMotor.Direction.REVERSE);
 
         // Wait for the game to start (driver presses START)
         telemetry.addData("Status", "Initialized");
@@ -80,6 +89,28 @@ public class FirstCompTele extends LinearOpMode{
             rightFrontDrive.setPower(rightFrontPower);
             leftBackDrive.setPower(leftBackPower);
             rightBackDrive.setPower(rightBackPower);
+
+            viper.setPower(gamepad1.left_trigger - gamepad1.right_trigger);
+
+            double armPower;
+
+            if (gamepad1.a) {
+                armPower = 1;
+            } else if (gamepad1.b) {
+                armPower = -1;
+            } else {
+                armPower = 0;
+            }
+
+            arm.setPower(armPower);
+
+            if (gamepad1.x){
+                intake.setPosition = 0.1;
+            }else if (gamepad1.y) {
+                intake.setPosition = 0.9;
+            } else {
+                intake.setPosition = 0.5;
+            }
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
