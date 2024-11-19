@@ -31,13 +31,9 @@ public class     Auto {
         closeright = servoRight.getPosition();
         closeleft = servoLeft.getPosition();
     }
-    public  void forward(double power, double distanceInCM){
-        backLeft.setPower(power);
-        backRight.setPower(power);
-        frontLeft.setPower(power);
-        frontRight.setPower(power);
+
 
     }
 
 
-}
+
