@@ -1,12 +1,14 @@
+/*
 package org.firstinspires.ftc.teamcode;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-impo
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -51,7 +53,7 @@ public class FirstCompTele extends LinearOpMode{
         telemetry.update();
 
         waitForStart();
-        runtime.reset();
+        //runtime.reset();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -104,13 +106,7 @@ public class FirstCompTele extends LinearOpMode{
 
             arm.setPower(armPower);
 
-            if (gamepad1.x){
-                intake.setPosition = 0.1;
-            }else if (gamepad1.y) {
-                intake.setPosition = 0.9;
-            } else {
-                intake.setPosition = 0.5;
-            }
+
 
 
             // Show the elapsed game time and wheel power.
@@ -122,3 +118,4 @@ public class FirstCompTele extends LinearOpMode{
     }}
 
 }
+*/
