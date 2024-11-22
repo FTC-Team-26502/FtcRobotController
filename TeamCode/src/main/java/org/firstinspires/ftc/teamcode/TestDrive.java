@@ -22,18 +22,18 @@ public class TestDrive extends OpMode {
 
     @Override
     public void init() {
-        backLeft = hardwareMap.get(DcMotor.class, "front left");
-        frontLeft = hardwareMap.get(DcMotor.class, "back left");
+        backLeft = hardwareMap.get(DcMotor.class, "back left");
+        frontLeft = hardwareMap.get(DcMotor.class, "front left");
         frontRight = hardwareMap.get(DcMotor.class, "back right");
         backRight = hardwareMap.get(DcMotor.class, "front right");
         viper = hardwareMap.get(DcMotor.class, "arm");
         arm = hardwareMap.get(DcMotor.class, "viper");
         rotate = hardwareMap.get(Servo.class, "twist");
         intake = hardwareMap.get(CRServo.class, "intake");
-        frontLeft.setDirection(DcMotor.Direction.FORWARD);
+        frontLeft.setDirection(DcMotor.Direction.REVERSE);
         backLeft.setDirection(DcMotor.Direction.REVERSE);
-        frontRight.setDirection(DcMotor.Direction.REVERSE);
-        backRight.setDirection(DcMotor.Direction.REVERSE);
+        frontRight.setDirection(DcMotor.Direction.FORWARD);
+        backRight.setDirection(DcMotor.Direction.FORWARD);
 
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -52,10 +52,10 @@ public class TestDrive extends OpMode {
 
     @Override
     public void loop() {
-        double frontLeftPower = (gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x);
-        double backLeftPower = (gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x);
-        double frontRightPower = (gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.left_stick_x);
-        double backRightPower = (gamepad1.left_stick_y - gamepad1.right_stick_x - gamepad1.left_stick_x)   ;
+        double frontLeftPower = (gamepad1.left_stick_y - gamepad1.right_stick_x - gamepad1.left_stick_x);
+        double backLeftPower = (gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.left_stick_x);
+        double frontRightPower = (gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x);
+        double backRightPower = (gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x)   ;
 
         frontLeft.setPower(frontLeftPower);
         backLeft.setPower(backLeftPower);

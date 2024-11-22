@@ -25,25 +25,42 @@ public void init() {
         //Set up objects(DC Motors)
     backLeft = hardwareMap.get(DcMotor.class, "back left");
     frontLeft = hardwareMap.get(DcMotor.class, "front left");
-    frontRight = hardwareMap.get(DcMotor.class, "front right");
-    backRight = hardwareMap.get(DcMotor.class, "back right");
-    viper = hardwareMap.get(DcMotor.class, "viper");
-    arm = hardwareMap.get(DcMotor.class, "arm");
+    frontRight = hardwareMap.get(DcMotor.class, "back right");
+    backRight = hardwareMap.get(DcMotor.class, "front right");
+    viper = hardwareMap.get(DcMotor.class, "arm");
+    arm = hardwareMap.get(DcMotor.class, "viper");
     rotate = hardwareMap.get(Servo.class, "twist");
     intake = hardwareMap.get(CRServo.class, "intake");
-    frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+    frontLeft.setDirection(DcMotor.Direction.REVERSE);
+    backLeft.setDirection(DcMotor.Direction.REVERSE);
+    frontRight.setDirection(DcMotor.Direction.FORWARD);
+    backRight.setDirection(DcMotor.Direction.FORWARD);
+
+    frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    viper.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+    arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    viper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public void move(long time, double forwardPower, double sidewaysPower, double turnPower) {
-        double backLeftPower = (sidewaysPower - forwardPower + turnPower)/10 ;
-        double frontLeftPower = (-sidewaysPower +forwardPower + turnPower)/10;
-        double backRightPower = (sidewaysPower + forwardPower + turnPower)/10;
-        double frontRightPower = (-sidewaysPower - frontLeftPower + turnPower)/10;
+        double frontLeftPower = (forwardPower - sidewaysPower - turnPower)/1.5;
+        double backLeftPower = (forwardPower - sidewaysPower + turnPower)/1.5;
+        double frontRightPower = (forwardPower + sidewaysPower + turnPower)/1.5;
+        double backRightPower = (forwardPower + sidewaysPower - turnPower)/1.5      ;
 
-        backLeft.setPower(backLeftPower);
         frontLeft.setPower(frontLeftPower);
-        backRight.setPower(backRightPower);
+        backLeft.setPower(backLeftPower);
         frontRight.setPower(frontRightPower);
+        backRight.setPower(backRightPower);
 
         try {
             Thread.sleep(time); // Sleep for 1 second (1000 milliseconds)
