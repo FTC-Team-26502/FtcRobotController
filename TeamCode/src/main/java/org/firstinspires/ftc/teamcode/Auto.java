@@ -97,11 +97,11 @@ public void init() {
     }
     }
     public void loop(){
-        move(1000, 0.2,0,0);
-        move(1000, 0,0.2,0);
-        move(1000, 0,0,0.2);
-        armfromstartgrab();
-        move(1000,0,0,0.2);
-        armupordown(true);
+        move(3000, 0.2,0,0);
+        move(3000, 0,0.2,0);
+        move(3000, 0,0,0.2);
+//        armfromstartgrab();
+        move(3000,0,0,0.2);
+//        armupordown(true);
     }
 }

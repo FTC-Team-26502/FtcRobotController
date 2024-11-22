@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 
 @TeleOp
-public class firstCompTele extends OpMode {
+public class TestDrive extends OpMode {
     protected DcMotor backLeft;
     protected DcMotor frontLeft;
     protected DcMotor frontRight;
@@ -31,7 +31,7 @@ public class firstCompTele extends OpMode {
         rotate = hardwareMap.get(Servo.class, "twist");
         intake = hardwareMap.get(CRServo.class, "intake");
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        backLeft.setDirection(DcMotor.Direction.FORWARD);
+        backLeft.setDirection(DcMotor.Direction.REVERSE);
         frontRight.setDirection(DcMotor.Direction.REVERSE);
         backRight.setDirection(DcMotor.Direction.REVERSE);
 
@@ -52,50 +52,14 @@ public class firstCompTele extends OpMode {
 
     @Override
     public void loop() {
-        double frontLeftPower = (gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x) / 5;
-        double backLeftPower = (gamepad1.left_stick_y - gamepad1.right_stick_x - gamepad1.left_stick_x) / 40;
-        double backRightPower = (gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.left_stick_x) / 5;
-        double frontRightPower = (gamepad1.left_stick_y - gamepad1.right_stick_x - gamepad1.left_stick_x) / 5;
+        double frontLeftPower = (gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x);
+        double backLeftPower = (gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x);
+        double frontRightPower = (gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.left_stick_x);
+        double backRightPower = (gamepad1.left_stick_y - gamepad1.right_stick_x - gamepad1.left_stick_x)   ;
 
         frontLeft.setPower(frontLeftPower);
         backLeft.setPower(backLeftPower);
-        frontRight.setPower(backRightPower);
-        backRight.setPower(frontRightPower);
-
-
-        double armmovment =gamepad1.right_stick_y;
-        arm.setPower(armmovment);
-
-
-
-
-        double vipermovements = (gamepad1.left_trigger - gamepad1.right_trigger)/10;
-        viper.setPower(vipermovements);
-
-
-        // servo move
-        if(gamepad1.y) {
-            // move to 0 degrees.
-            rotate.setPosition(0);
-        } else if (gamepad1.x) {
-            // move to 90 degrees.
-            rotate.setPosition(0.5);
-        } else if (gamepad1.a) {
-            // move to 180 degrees.
-            rotate.setPosition(1);
-        }
-
-        if(gamepad1.dpad_left) {
-            // move to 0 degrees.
-            intake.setPower(0.5);
-        }
-        else if(gamepad1.dpad_right) {
-            // move to 0 degrees.
-            intake.setPower(-0.5);
-        }
-        telemetry.addData("Servo Position", rotate.getPosition());
-        telemetry.addData("Status", "Running");
-        telemetry.update();
+        frontRight.setPower(frontRightPower);
+        backRight.setPower(backRightPower);
     }
 }
-
