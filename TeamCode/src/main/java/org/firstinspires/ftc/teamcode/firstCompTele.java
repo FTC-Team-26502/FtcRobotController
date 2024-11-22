@@ -48,14 +48,11 @@ public class firstCompTele extends OpMode {
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    }
-
-    @Override
-    public void loop() {
-        double frontLeftPower = (gamepad1.left_stick_y - gamepad1.right_stick_x - gamepad1.left_stick_x);
-        double backLeftPower = (gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.left_stick_x);
-        double frontRightPower = (gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x);
-        double backRightPower = (gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x)   ;
+    }  public void loop() {
+        double frontLeftPower = (gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.left_stick_x)/2;
+        double backLeftPower = (gamepad1.left_stick_y - gamepad1.right_stick_x - gamepad1.left_stick_x)/2;
+        double frontRightPower = (gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x)/2;
+        double backRightPower = (gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x)/2   ;
 
         frontLeft.setPower(frontLeftPower);
         backLeft.setPower(backLeftPower);
@@ -63,11 +60,8 @@ public class firstCompTele extends OpMode {
         backRight.setPower(backRightPower);
 
 
-        double armmovment =gamepad1.right_stick_y;
+        double armmovment =gamepad1.right_stick_y/15;
         arm.setPower(armmovment);
-
-
-
 
         double vipermovements = (gamepad1.left_trigger - gamepad1.right_trigger)/10;
         viper.setPower(vipermovements);
@@ -79,7 +73,7 @@ public class firstCompTele extends OpMode {
             rotate.setPosition(0);
         } else if (gamepad1.x) {
             // move to 90 degrees.
-            rotate.setPosition(0.5);
+            rotate.setPosition(0.8);
         } else if (gamepad1.a) {
             // move to 180 degrees.
             rotate.setPosition(1);
