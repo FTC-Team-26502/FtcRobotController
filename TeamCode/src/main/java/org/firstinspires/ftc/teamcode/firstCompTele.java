@@ -30,8 +30,10 @@ public class firstCompTele extends OpMode {
         arm = hardwareMap.get(DcMotor.class, "viper");
         rotate = hardwareMap.get(Servo.class, "twist");
         intake = hardwareMap.get(CRServo.class, "intake");
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-//      backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeft.setDirection(DcMotor.Direction.FORWARD);
+        backLeft.setDirection(DcMotor.Direction.FORWARD);
+        frontRight.setDirection(DcMotor.Direction.REVERSE);
+        backRight.setDirection(DcMotor.Direction.REVERSE);
 
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -50,22 +52,21 @@ public class firstCompTele extends OpMode {
 
     @Override
     public void loop() {
-        double backLeftPower = gamepad1.left_stick_x - gamepad1.left_stick_y ;
-        double frontLeftPower = -gamepad1.left_stick_x + gamepad1.left_stick_y;
-        double backRightPower = gamepad1.left_stick_x + gamepad1.left_stick_y ;
-        double frontRightPower = -gamepad1.left_stick_x - gamepad1.left_stick_y;
+        double backLeftPower = (gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x)/5 ;
+        double frontLeftPower = (gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.left_stick_x)/5;
+        double backRightPower = (gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.left_stick_x)/5;
+        double frontRightPower = (gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x)/5;
 
         backLeft.setPower(backLeftPower);
         frontLeft.setPower(frontLeftPower);
         backRight.setPower(backRightPower);
         frontRight.setPower(frontRightPower);
 
-        if (1==1) {
 
-            double armmovment =gamepad1.right_stick_y     ;
-            arm.setPower(armmovment);
+        double armmovment =gamepad1.right_stick_y;
+        arm.setPower(armmovment);
 
-        }
+
 
 
         double vipermovements = (gamepad1.left_trigger - gamepad1.right_trigger)/10;

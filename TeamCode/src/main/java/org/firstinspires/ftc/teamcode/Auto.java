@@ -34,11 +34,11 @@ public void init() {
     frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
-    public void move(long time, double forwardPower, double sidewaysPower) {
-        double backLeftPower = (-sidewaysPower + forwardPower)/10;
-        double frontLeftPower = (sidewaysPower - forwardPower)/10;
-        double backRightPower = (-sidewaysPower - forwardPower)/10;
-        double frontRightPower = (sidewaysPower + forwardPower)/10;
+    public void move(long time, double forwardPower, double sidewaysPower, double turnPower) {
+        double backLeftPower = (sidewaysPower - forwardPower + turnPower)/10 ;
+        double frontLeftPower = (-sidewaysPower +forwardPower + turnPower)/10;
+        double backRightPower = (sidewaysPower + forwardPower + turnPower)/10;
+        double frontRightPower = (-sidewaysPower - frontLeftPower + turnPower)/10;
 
         backLeft.setPower(backLeftPower);
         frontLeft.setPower(frontLeftPower);
@@ -60,26 +60,48 @@ public void init() {
         arm.setPower(1);
         viper.setPower(1);
         try {
-            Thread.sleep(1); // Sleep for 1 second (1000 milliseconds)
+            Thread.sleep(1000); // Sleep for 1 second (1000 milliseconds)
         } catch (InterruptedException e) {
             System.err.println("Interrupted: " + e.getMessage());
         }
         intake.setPower(-0.5);
     }
-
-    public void loop(){
-        move(1000, 1,0);
-
-
-
+    public void armupordown(boolean up) {
+    if (up){
+        arm.setPower(1);
+        viper.setPower(1);
+        try {
+            Thread.sleep(1000); // Sleep for 1 second (1000 milliseconds)
+        } catch (InterruptedException e) {
+            System.err.println("Interrupted: " + e.getMessage());
+        }
+        intake.setPower(-0.5);
+    }else{
+        arm.setPower(-1);
+        viper.setPower(-1);
+        try {
+            Thread.sleep(1000); // Sleep for 1 second (1000 milliseconds)
+        } catch (InterruptedException e) {
+            System.err.println("Interrupted: " + e.getMessage());
+        }
+        arm.setPower(0);
+        viper.setPower(1);
+        try {
+            Thread.sleep(1000); // Sleep for 1 second (1000 milliseconds)
+        } catch (InterruptedException e) {
+            System.err.println("Interrupted: " + e.getMessage());
+        }
+        viper.setPower(0);
+        intake.setPower(0.5);
 
     }
-
+    }
+    public void loop(){
+        move(1000, 0.2,0,0);
+        move(1000, 0,0.2,0);
+        move(1000, 0,0,0.2);
+        armfromstartgrab();
+        move(1000,0,0,0.2);
+        armupordown(true);
+    }
 }
-
-
-
-
-
-
-
