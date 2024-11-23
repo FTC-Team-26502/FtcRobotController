@@ -69,7 +69,7 @@ public class firstCompTele extends OpMode {
 
         // servo move
         if(gamepad1.y) {
-            // move to 0 degrees.
+            // move to 0 degrees. nnn
             rotate.setPosition(0);
         } else if (gamepad1.x) {
             // move to 90 degrees.
