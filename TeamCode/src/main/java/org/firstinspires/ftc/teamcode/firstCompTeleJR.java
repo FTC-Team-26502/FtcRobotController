@@ -2,15 +2,12 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 
 
 @TeleOp
-public class firstCompTele extends OpMode {
+public class firstCompTeleJR extends OpMode {
     protected DcMotor backLeft;
     protected DcMotor frontLeft;
     protected DcMotor frontRight;
@@ -33,10 +30,10 @@ public class firstCompTele extends OpMode {
 //        rotate = hardwareMap.get(Servo.class, "twist");
 //        intake = hardwareMap.get(CRServo.class, "intake");
 //        color = hardwareMap.get(ColorSensor.class, "color");
-        frontLeft.setDirection(DcMotor.Direction.REVERSE);
-        backLeft.setDirection(DcMotor.Direction.REVERSE);
-        frontRight.setDirection(DcMotor.Direction.FORWARD);
-        backRight.setDirection(DcMotor.Direction.FORWARD);
+        frontLeft.setDirection(DcMotor.Direction.FORWARD);
+        backLeft.setDirection(DcMotor.Direction.FORWARD);
+        frontRight.setDirection(DcMotor.Direction.REVERSE);
+        backRight.setDirection(DcMotor.Direction.REVERSE);
 
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -52,10 +49,10 @@ public class firstCompTele extends OpMode {
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }  public void loop() {
-        double frontLeftPower = (-gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x)/2;
-        double backLeftPower = (-gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x)/2;
-        double frontRightPower = (-gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.left_stick_x)/2;
-        double backRightPower = (-gamepad1.left_stick_y - gamepad1.right_stick_x - gamepad1.left_stick_x)/2   ;
+        double frontLeftPower = (gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.left_stick_x)/2;
+        double backLeftPower = (gamepad1.left_stick_y - gamepad1.right_stick_x - gamepad1.left_stick_x)/2;
+        double frontRightPower = (gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x)/2;
+        double backRightPower = (gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x)/2   ;
 
         frontLeft.setPower(frontLeftPower);
         backLeft.setPower(backLeftPower);
