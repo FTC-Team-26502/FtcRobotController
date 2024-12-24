@@ -3,21 +3,24 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 
 @TeleOp
-public class firstCompTeleJR extends OpMode {
+public class firstCompTeleQueens extends OpMode {
+    //Declaring all the motors
     protected DcMotor backLeft;
     protected DcMotor frontLeft;
     protected DcMotor frontRight;
     protected DcMotor backRight;
-//    protected DcMotor viper;
-//    protected DcMotor arm;
-////    protected Servo rotate;
-//    protected CRServo intake;
-//    protected ColorSensor color;
-
+    protected DcMotor sideways;
+    protected DcMotor up;
+    //making the position for linear and vertical extention
+    int end = -300;
+    int start = 300;
+    int top = 4000;
+    int bottom = 0;
+    int middle = 1200;
+    int low = 700;
 
     @Override
     public void init() {
@@ -25,63 +28,69 @@ public class firstCompTeleJR extends OpMode {
         frontLeft = hardwareMap.get(DcMotor.class, "front left");
         frontRight = hardwareMap.get(DcMotor.class, "back right");
         backRight = hardwareMap.get(DcMotor.class, "front right");
-//        viper = hardwareMap.get(DcMotor.class, "viper");
-//        arm = hardwareMap.get(DcMotor.class, "arm");
-//        rotate = hardwareMap.get(Servo.class, "twist");
-//        intake = hardwareMap.get(CRServo.class, "intake");
-//        color = hardwareMap.get(ColorSensor.class, "color");
-        frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        backLeft.setDirection(DcMotor.Direction.FORWARD);
-        frontRight.setDirection(DcMotor.Direction.REVERSE);
-        backRight.setDirection(DcMotor.Direction.REVERSE);
 
+        //Setting drive motors settings
+        frontLeft.setDirection(DcMotor.Direction.REVERSE);
+        backLeft.setDirection(DcMotor.Direction.REVERSE);
+        frontRight.setDirection(DcMotor.Direction.FORWARD);
+        backRight.setDirection(DcMotor.Direction.FORWARD);
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        viper.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//
-//        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//        viper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        //Setting the extenders settings
+        sideways = hardwareMap.get(DcMotor.class, "backleft");
+        sideways.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        sideways.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        sideways.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        up = hardwareMap.get(DcMotor.class, "vertical");
+        up.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        up.setTargetPosition(0);
+        up.setPower(0.3);
+        up.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        up.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }  public void loop() {
-        double frontLeftPower = (gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.left_stick_x)/2;
-        double backLeftPower = (gamepad1.left_stick_y - gamepad1.right_stick_x - gamepad1.left_stick_x)/2;
-        double frontRightPower = (gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x)/2;
-        double backRightPower = (gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x)/2   ;
+        // calculating the power for each wheel with controler imput
+        double frontLeftPower = (gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x)/1.5;
+        double backLeftPower = (gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x)/1.5;
+        double frontRightPower = (gamepad1.left_stick_y - gamepad1.right_stick_x - gamepad1.left_stick_x)/1.5;
+        double backRightPower = (gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.left_stick_x)/1.5   ;
 
         frontLeft.setPower(frontLeftPower);
         backLeft.setPower(backLeftPower);
         frontRight.setPower(frontRightPower);
         backRight.setPower(backRightPower);
 
+        //Moving the linear exteder with the joystick
+        if (sideways.getCurrentPosition()<start && sideways.getCurrentPosition()>end){
+            double power = gamepad1.left_stick_x/10;
+            sideways.setPower(power);
+            telemetry.addData("Motor moving", true);
+        }else if(gamepad1.left_stick_x>0){
+            sideways.setPower(gamepad1.left_stick_x/10);
+        }else if(gamepad1.left_stick_x<0){
+            sideways.setPower(gamepad1.left_stick_x/10);
+        }else{
+            sideways.setPower(0);
+        }
 
-//        double armmovment =-gamepad1.right_stick_y/15;
-//        arm.setPower(armmovment);
-//
-//        double vipermovements = (gamepad1.left_trigger - gamepad1.right_trigger)/10;
-//        viper.setPower(vipermovements);
+        //moving the viper slide up to different positions
+        if (gamepad1.a){
+            up.setTargetPosition(bottom);
+        } else if (gamepad1.b) {
+            up.setTargetPosition(top);
+        }else if (gamepad1.x) {
+            up.setTargetPosition(middle);
+        }else if (gamepad1.y) {
+            up.setTargetPosition(low);
+        }
 
 
-        // servo move
-
-
-
-//        if (color.blue() > 1000 && color.blue()> color.green() && color.red()<color.blue()){
-//            rotate.setPosition(0);
-//        }else if (color.red() > 1000 && color.red()> color.green() && color.red()>color.blue()) {
-//            rotate.setPosition(1);
-//        }else if (color.red() > 1000 && color.green()> 1000 && color.red()>color.blue()) {
-//            rotate.setPosition(0.5);
-//        }
-//        telemetry.addData("red", color.red());
-//        telemetry.addData("green", color.green());
-//        telemetry.addData("blue", color.blue());
-//        telemetry.addData("Servo Position", rotate.getPosition());
         telemetry.addData("Status", "Running");
         telemetry.update();
     }
