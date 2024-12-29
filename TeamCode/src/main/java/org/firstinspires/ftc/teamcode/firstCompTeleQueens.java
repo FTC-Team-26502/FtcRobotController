@@ -46,8 +46,9 @@ public class firstCompTeleQueens extends OpMode {
         //Setting the extenders settings
         sideways = hardwareMap.get(DcMotor.class, "backleft");
         sideways.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        sideways.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        sideways.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         sideways.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        sideways.setPower(0.2);
         up = hardwareMap.get(DcMotor.class, "vertical");
         up.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         up.setTargetPosition(0);
@@ -67,16 +68,10 @@ public class firstCompTeleQueens extends OpMode {
         backRight.setPower(backRightPower);
 
         //Moving the linear exteder with the joystick
-        if (sideways.getCurrentPosition()<start && sideways.getCurrentPosition()>end){
-            double power = gamepad1.left_stick_x/10;
-            sideways.setPower(power);
-            telemetry.addData("Motor moving", true);
-        }else if(gamepad1.left_stick_x>0){
-            sideways.setPower(gamepad1.left_stick_x/10);
-        }else if(gamepad1.left_stick_x<0){
-            sideways.setPower(gamepad1.left_stick_x/10);
-        }else{
-            sideways.setPower(0);
+        if (gamepad2.right_bumper){
+            sideways.setTargetPosition(0);
+        }else if(gamepad2.left_bumper){
+            sideways.setTargetPosition(-200);
         }
 
         //moving the viper slide up to different positions

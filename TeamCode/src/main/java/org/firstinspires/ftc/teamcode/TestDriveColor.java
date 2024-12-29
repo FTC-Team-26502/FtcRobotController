@@ -33,17 +33,17 @@ public class TestDriveColor extends OpMode {
 
     @Override
     public void loop() {
-//        int red = color.red();
-//        int green = color.green();
-//        int blue = color.blue();
-//        int alpha = color.alpha();
-//
-//        // Display the color values on the telemetry
-//        telemetry.addData("Red", red);
-//        telemetry.addData("Green", green);
-//        telemetry.addData("Blue", blue);
-//        telemetry.addData("Alpha", alpha);
-//        telemetry.update();
+        int red = color.red();
+        int green = color.green();
+        int blue = color.blue();
+        int alpha = color.alpha();
+
+        // Display the color values on the telemetry
+        telemetry.addData("Red", red);
+        telemetry.addData("Green", green);
+        telemetry.addData("Blue", blue);
+        telemetry.addData("Alpha", alpha);
+        telemetry.update();
 //        if(red>green && red>blue && red>alpha){
 //            claw.setPosition(0.28);
 //        }else if(blue>green && red<blue && blue>alpha) {
@@ -60,20 +60,20 @@ public class TestDriveColor extends OpMode {
 //        telemetry.addData("Green", green);
 //        telemetry.addData("Blue", blue);
 //        telemetry.addData("Alpha", alpha);
-        telemetry.addData("motor", up.getCurrentPosition());
+//        telemetry.addData("motor", up.getCurrentPosition());
 //        telemetry.addData("Light", claw.getPosition());
-        telemetry.update();
+//        telemetry.update();
 //        }else{
 //            claw.setPosition(0.1);
 //        }
-//        if(blue<green && red<green && green>alpha){
-//            claw.setPosition(0.335);
-//        }else{
-//            claw.setPosition(0.1);
-//        }
+        if(blue<green && red<green && green>alpha){
+            claw.setPosition(0.335);
+        }else{
+            claw.setPosition(0.1);
+        }
 //        double red = 0.28;
 //        double yellow = 0.335;
 //        double blue = 0.6;
-//        claw.setPosition(0.71);
+        claw.setPosition(0.71);
     }
 }

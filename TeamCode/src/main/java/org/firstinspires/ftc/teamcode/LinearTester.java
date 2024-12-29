@@ -24,6 +24,9 @@ public class LinearTester extends OpMode {
         sideways = hardwareMap.get(DcMotor.class, "backleft");
         sideways.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         sideways.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        sideways.setTargetPosition(0);
+        sideways.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        sideways.setPower(0.9);
         sideways.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         up = hardwareMap.get(DcMotor.class, "vertical");
         up.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -34,16 +37,10 @@ public class LinearTester extends OpMode {
     }
 
     public void loop() {
-        if (sideways.getCurrentPosition()<start && sideways.getCurrentPosition()>end){
-            double power = gamepad1.left_stick_x/10;
-            sideways.setPower(power);
-            telemetry.addData("Motor moving", true);
-        }else if(gamepad1.left_stick_x>0){
-            sideways.setPower(gamepad1.left_stick_x/10);
-        }else if(gamepad1.left_stick_x<0){
-            sideways.setPower(gamepad1.left_stick_x/10);
-        }else{
-            sideways.setPower(0);
+        if (gamepad2.right_bumper){
+            sideways.setTargetPosition(0);
+        }else if(gamepad2.left_bumper){
+            sideways.setTargetPosition(-850);
         }
         if (gamepad1.a){
             up.setTargetPosition(bottom);
