@@ -4,9 +4,22 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
- 
- 
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+
+import java.util.List;
+
+
 @TeleOp(name="Dorina and Ananya", group="Second Competition")
 //  @Disabled
 public class SecondCompetitionTeleOp extends LinearOpMode {
@@ -27,8 +40,8 @@ public class SecondCompetitionTeleOp extends LinearOpMode {
 
     //////////////////////////////////////////////
     /// Lights 
-    private Servo lightsLeft = null;
-    private Servo lightsRight = null;
+    private Servo leftLight = null;
+    private Servo rightLight = null;
     private final double BLUE = 0.65;
     private final double RED = 0.35;
     private final double YELLOW = 0.45;
@@ -98,8 +111,8 @@ public class SecondCompetitionTeleOp extends LinearOpMode {
     private VisionPortal visionPortal;
 
     private void initLights() {
-        lightsLeft = hardwareMap.get(Servo.class, "lights left");
-        lightsRight = hardwareMap.get(Servo.class, "lights right");
+        leftLight = hardwareMap.get(Servo.class, "lights left");
+        rightLight = hardwareMap.get(Servo.class, "lights right");
     }
 
 
@@ -137,10 +150,11 @@ public class SecondCompetitionTeleOp extends LinearOpMode {
     }
 
     private void runHorizontalSlide() {
-        int red = color.red();
-        int green = color.green();
-        int blue = color.blue();
-        int alpha = color.alpha();
+        String whatColor = null;
+        int red = colorSensor.red();
+        int green = colorSensor.green();
+        int blue = colorSensor.blue();
+        int alpha = colorSensor.alpha();
 
         telemetry.addData("Green", green);
         if(red>blue && green>red && alpha>blue && red<200){
@@ -193,8 +207,8 @@ public class SecondCompetitionTeleOp extends LinearOpMode {
         telemetry.addData("Blue", blue);
         telemetry.addData("Alpha", alpha);
         telemetry.addData("What Color:", whatColor);
-        telemetry.addData("Servo position", spinner.getPosition());
-        telemetry.addData("Servo claw", claw.getPosition());
+        telemetry.addData("Servo position", intakeVerticalRotationHorizontalSlide.getPosition());
+        telemetry.addData("Servo claw",  clawHorizontalSlide.getPosition());
         telemetry.addData("Joy Stick:" , gamepad2.left_stick_x);
         telemetry.update();
     }
@@ -213,13 +227,13 @@ public class SecondCompetitionTeleOp extends LinearOpMode {
     private void runVerticalSlide() {
         //moving the viper slide up to different positions
         if (gamepad1.a){
-            motorVerticalSlide.setTargetPosition(bottom);
+            motorVerticalSlide.setTargetPosition(BOTTOM_VERTICAL_SLIDE_POSITION);
         } else if (gamepad1.b) {
-            motorVerticalSlide.setTargetPosition(top);
+            motorVerticalSlide.setTargetPosition(TOP_VERTICAL_SLIDE_POSITION);
         }else if (gamepad1.x) {
-            motorVerticalSlide.setTargetPosition(middle);
+            motorVerticalSlide.setTargetPosition(MIDDLE_VERTICAL_SLIDE_POSITION);
         }else if (gamepad1.y) {
-            motorVerticalSlide.setTargetPosition(low);
+            motorVerticalSlide.setTargetPosition(LOW_VERTICAL_SLIDE_POSITION);
         }
 
     }
@@ -331,7 +345,7 @@ public class SecondCompetitionTeleOp extends LinearOpMode {
 
 
 
-    private runDriveTrain() {
+    private void runDriveTrain() {
         // calculating the power for each wheel with controller input
         double frontLeftPower = (gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x)/1.5;
         double backLeftPower = (gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x)/1.5;
@@ -345,7 +359,7 @@ public class SecondCompetitionTeleOp extends LinearOpMode {
 
     }
 
-    private runAprilTag() {
+    private void runAprilTag() {
         telemetryAprilTag();
         // Push telemetry to the Driver Station.
         telemetry.update();
