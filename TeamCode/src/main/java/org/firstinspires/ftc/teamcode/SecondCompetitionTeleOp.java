@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -29,10 +31,11 @@ public class SecondCompetitionTeleOp extends LinearOpMode {
     //////////////////////////////////////////////
     /// Drive Train motors.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor frontLeft = null;
-    private DcMotor backLeft = null;
-    private DcMotor frontRight = null;
-    private DcMotor backRight = null;
+    private SampleMecanumDrive driveTrain = null;
+//    private DcMotor frontLeft = null;
+//    private DcMotor backLeft = null;
+//    private DcMotor frontRight = null;
+//    private DcMotor backRight = null;
 
     //////////////////////////////////////////////
     /// Color sensor
@@ -65,6 +68,8 @@ public class SecondCompetitionTeleOp extends LinearOpMode {
     private final int BOTTOM_VERTICAL_SLIDE_POSITION = 0;
     private final int MIDDLE_VERTICAL_SLIDE_POSITION = 1200;
     private final int LOW_VERTICAL_SLIDE_POSITION = 700;
+
+    private final double MOTOR_SPEED = 0.8;
 
 
     /////////////////////////////////////////////
@@ -119,23 +124,25 @@ public class SecondCompetitionTeleOp extends LinearOpMode {
     private void initDriveTrain() {
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
-        frontLeft  = hardwareMap.get(DcMotor.class, "left front");
-        backLeft  = hardwareMap.get(DcMotor.class, "left back");
-        frontRight = hardwareMap.get(DcMotor.class, "right front");
-        backRight = hardwareMap.get(DcMotor.class, "right back");
+//        frontLeft  = hardwareMap.get(DcMotor.class, "left front");
+//        backLeft  = hardwareMap.get(DcMotor.class, "left back");
+//        frontRight = hardwareMap.get(DcMotor.class, "right front");
+//        backRight = hardwareMap.get(DcMotor.class, "right back");
+        driveTrain = new SampleMecanumDrive(hardwareMap);
+        driveTrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        frontLeft.setDirection(DcMotor.Direction.REVERSE);
-        backLeft.setDirection(DcMotor.Direction.REVERSE);
-        frontRight.setDirection(DcMotor.Direction.FORWARD);
-        backRight.setDirection(DcMotor.Direction.FORWARD);
-        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        frontLeft.setDirection(DcMotor.Direction.REVERSE);
+//        backLeft.setDirection(DcMotor.Direction.REVERSE);
+//        frontRight.setDirection(DcMotor.Direction.FORWARD);
+//        backRight.setDirection(DcMotor.Direction.FORWARD);
+//        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     private void initHorizontalSlide() {
@@ -346,17 +353,25 @@ public class SecondCompetitionTeleOp extends LinearOpMode {
 
 
     private void runDriveTrain() {
-        // calculating the power for each wheel with controller input
-        double frontLeftPower = (gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x)/1.5;
-        double backLeftPower = (gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x)/1.5;
-        double frontRightPower = (gamepad1.left_stick_y - gamepad1.right_stick_x - gamepad1.left_stick_x)/1.5;
-        double backRightPower = (gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.left_stick_x)/1.5   ;
+//        // calculating the power for each wheel with controller input
+//        double frontLeftPower = (gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x)/1.5;
+//        double backLeftPower = (gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x)/1.5;
+//        double frontRightPower = (gamepad1.left_stick_y - gamepad1.right_stick_x - gamepad1.left_stick_x)/1.5;
+//        double backRightPower = (gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.left_stick_x)/1.5   ;
+//
+//        frontLeft.setPower(frontLeftPower);
+//        backLeft.setPower(backLeftPower);
+//        frontRight.setPower(frontRightPower);
+//        backRight.setPower(backRightPower);
+        driveTrain.setWeightedDrivePower(
+                new Pose2d(
+                        gamepad1.left_stick_y * MOTOR_SPEED,
 
-        frontLeft.setPower(frontLeftPower);
-        backLeft.setPower(backLeftPower);
-        frontRight.setPower(frontRightPower);
-        backRight.setPower(backRightPower);
+                        gamepad1.left_stick_x * MOTOR_SPEED,
 
+                        -gamepad1.right_stick_x * MOTOR_SPEED
+                )
+        );
     }
 
     private void runAprilTag() {
