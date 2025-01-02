@@ -57,10 +57,12 @@ public class SecondCompetitionTeleOp extends LinearOpMode {
     private DcMotor motorHorizontalSlide = null;
     private Servo clawHorizontalSlide = null;
     private Servo intakeVerticalRotationHorizontalSlide = null;
+    private Servo intakeWristHorizontalSlide = null;
     
      
     /////////////////////////////////////////////
     /// Horizontal slide
+    private Servo intakeWristVerticalSlide;
     private DcMotor motorVerticalSlide = null;
     private Servo clawVerticalSlide = null;
     private Servo intakeVerticalRotationVerticalSlide = null;
@@ -72,6 +74,8 @@ public class SecondCompetitionTeleOp extends LinearOpMode {
 
     private final double MOTOR_SPEED = 0.8;
 
+    private final int HORIZONTAL_SLIDE_OUT_LIMIT = 0;
+    private final int HORIZONTAL_SLIDE_IN_LIMIT = 0;
 
     /////////////////////////////////////////////
     // AprilTag variables
@@ -147,9 +151,10 @@ public class SecondCompetitionTeleOp extends LinearOpMode {
     }
 
     private void initHorizontalSlide() {
-        motorHorizontalSlide = hardwareMap.get(DcMotor.class, "horizontal");
-        clawHorizontalSlide = hardwareMap.get(Servo.class, "claw horizontal");
-        intakeVerticalRotationHorizontalSlide = hardwareMap.get(Servo.class, "intake horizontal");
+        motorHorizontalSlide = hardwareMap.get(DcMotor.class, "horizontalExtender");
+        clawHorizontalSlide = hardwareMap.get(Servo.class, "intakeClaw");
+        intakeVerticalRotationHorizontalSlide = hardwareMap.get(Servo.class, "intakeArm");
+        intakeWristHorizontalSlide = hardwareMap.get(Servo.class,"intakeWrist");
         motorHorizontalSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorHorizontalSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorHorizontalSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -222,9 +227,10 @@ public class SecondCompetitionTeleOp extends LinearOpMode {
     }
 
     private void initVerticalSlide() {
-        motorVerticalSlide = hardwareMap.get(DcMotor.class, "vertical");
-        clawVerticalSlide = hardwareMap.get(Servo.class, "claw vertical");
-        intakeVerticalRotationVerticalSlide = hardwareMap.get(Servo.class, "intake vertical");
+        motorVerticalSlide = hardwareMap.get(DcMotor.class, "verticalViper");
+        clawVerticalSlide = hardwareMap.get(Servo.class, "topClaw");
+        intakeVerticalRotationVerticalSlide = hardwareMap.get(Servo.class, "topArm");
+        intakeWristVerticalSlide = hardwareMap.get(Servo.class, "topWrist");
         motorVerticalSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorVerticalSlide.setTargetPosition(0);
         motorVerticalSlide.setPower(0.3);
