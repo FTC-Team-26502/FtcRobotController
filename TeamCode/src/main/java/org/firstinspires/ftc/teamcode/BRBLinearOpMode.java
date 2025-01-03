@@ -18,8 +18,8 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     //////////////////////////////////////////////
     /// Drive Train motors.
 //    private ElapsedTime runtime = new ElapsedTime();
-    private final double DRIVE_MOTOR_SPEED = 0.8;
-    private SampleMecanumDrive driveTrain = null;
+    protected final double DRIVE_MOTOR_SPEED = 0.8;
+    protected SampleMecanumDrive driveTrain = null;
 
     //////////////////////////////////////////////
     /// Color sensor
@@ -27,56 +27,53 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
 
     //////////////////////////////////////////////
     /// Lights
-    private Servo leftLight = null;
-    private Servo rightLight = null;
-    private final double BLUE_LIGHT = 0.65;
-    private final double RED_LIGHT = 0.35;
-    private final double YELLOW_LIGHT = 0.45;
-    private final double LIGHT_OFF = 0.0;
+    protected Servo leftLight = null;
+    protected Servo rightLight = null;
+    protected final double BLUE_LIGHT = 0.65;
+    protected final double RED_LIGHT = 0.35;
+    protected final double YELLOW_LIGHT = 0.45;
+    protected final double LIGHT_OFF = 0.0;
 
 
     /////////////////////////////////////////////
     /// Horizontal slide
-    private final double INTAKE_CLAW_OPEN = 1;
-    private final double INTAKE_CLAW_CLOSED = 0.8;
-    private final double INSIDE_ROBOT_CLAW_HORIZONTAL = 0.05;
-    private final double WRIST_START_POSITION = 0.8;
-    private final double ARM_READY_TO_GRAB = 0.55;
-    private final double ARM_GRAB = 0.7;
-    private final int HORIZONTAL_SLIDE_OUT_LIMIT = -850;
-    private final int HORIZONTAL_SLIDE_IN_LIMIT = 0;
-    private final int HORIZONTAL_JOYSTICK_MULTIPLIER = 20;
+    protected final double INTAKE_CLAW_OPEN = 1;
+    protected final double INTAKE_CLAW_CLOSED = 0.8;
+    protected final double INSIDE_ROBOT_CLAW_HORIZONTAL = 0.05;
+    protected final double WRIST_START_POSITION = 0.8;
+    protected final double ARM_READY_TO_GRAB = 0.55;
+    protected final double ARM_GRAB = 0.7;
+    protected final int HORIZONTAL_SLIDE_OUT_LIMIT = -850;
+    protected final int HORIZONTAL_SLIDE_IN_LIMIT = 0;
+    protected final int HORIZONTAL_JOYSTICK_MULTIPLIER = 20;
 
-    private int horizontalSlideLocation = 0;
-    private DcMotor motorHorizontalSlide = null;
-    private Servo intakClaw = null;
-    private Servo intakeArm = null;
-    private Servo intakeWrist = null;
-
-
+    protected int horizontalSlideLocation = 0;
+    protected DcMotor motorHorizontalSlide = null;
+    protected Servo intakClaw = null;
+    protected Servo intakeArm = null;
+    protected Servo intakeWrist = null;
 
     /////////////////////////////////////////////
     /// Vertical slide
-    private final int TOP_VERTICAL_POSITION = 3600;
-    private final int BOTTOM_VERTICAL_POSITION = 0;
-    private final int MIDDLE_VERTICAL_POSITION = 1600;
-    private final int VERTICAL_JOYSTICK_MULTIPLIER = 30;
-    private final double TOP_CLAW_OPEN = 0.5;
-    private final double TOP_CLAW_CLOSE = 0;
-    private final double DROPPING_POSITION = 0.95;
-    private final double INSIDE_ROBOT_CLAW_VERTICAL = 0.07;
-    private Servo topWrist;
-    private DcMotor motorVerticalSlide = null;
-    private Servo topClaw = null;
-    private Servo topArm = null;
-    private int verticalCurrentPosition = 0;
+    protected final int TOP_VERTICAL_POSITION = 3600;
+    protected final int BOTTOM_VERTICAL_POSITION = 0;
+    protected final int MIDDLE_VERTICAL_POSITION = 1600;
+    protected final int VERTICAL_JOYSTICK_MULTIPLIER = 30;
+    protected final double TOP_CLAW_OPEN = 0.5;
+    protected final double TOP_CLAW_CLOSE = 0;
+    protected final double DROPPING_POSITION = 0.95;
+    protected final double INSIDE_ROBOT_CLAW_VERTICAL = 0.07;
+    protected Servo topWrist;
+    protected DcMotor motorVerticalSlide = null;
+    protected Servo topClaw = null;
+    protected Servo topArm = null;
+    protected int verticalCurrentPosition = 0;
 
     /////////////////////////////////////////////
     /// Transfer
-    private boolean readyForTransfer = false;
+    protected boolean readyForTransfer = false;
 
-    protected BRBLinearOpMode(boolean redAlliance, boolean samples){
-        super();
+    protected void initOpMode(boolean redAlliance, boolean samples){
         this.redAlliance = redAlliance;
         this.samples = samples;
         // Init drive train
@@ -111,6 +108,8 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         rightLight = hardwareMap.get(Servo.class, "lights right");
         // Init color sensor
         colorSensor = hardwareMap.get(ColorSensor.class, "color sensor");
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
     }
 
     /**
