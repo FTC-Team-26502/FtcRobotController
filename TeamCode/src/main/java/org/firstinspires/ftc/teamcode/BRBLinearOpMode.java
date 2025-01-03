@@ -158,7 +158,6 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     }
 
     protected String detectColor(){
-        String whatColor = null;
         double red = colorSensor.red();
         double green = colorSensor.green();
         double blue = colorSensor.blue();

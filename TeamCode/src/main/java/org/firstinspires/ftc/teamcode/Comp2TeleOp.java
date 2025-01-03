@@ -24,16 +24,22 @@ public abstract class Comp2TeleOp extends BRBLinearOpMode {
     protected void loopOpMode() {
         waitForStart();
         // @TODO
-    }
+        while ( !isStopRequested() ) {
+            // move the robot
+            driveTrain.setWeightedDrivePower(
+                    new Pose2d(
+                            gamepad1.left_stick_y * DRIVE_MOTOR_SPEED,
 
-    private void runHorizontalSlide() {
-        String whatColor = null;
-        double red = colorSensor.red();
-        double green = colorSensor.green();
-        double blue = colorSensor.blue();
-        double alpha = colorSensor.alpha();
+                            gamepad1.left_stick_x * DRIVE_MOTOR_SPEED,
 
-        telemetry.addData("Green", green);
+                            -gamepad1.right_stick_x * DRIVE_MOTOR_SPEED
+                    )
+            );
+            // check horizontal slide commands
+            String whatColor = detectColor();
+            telemetry.addData("Color Detected", whatColor);
+            telemetry.update();
+            if ( whatColor == "yellow" )
 //        if(red>blue && green>red && alpha>blue && red<200){
 //            whatColor= "yellow";
 //            intakClaw.setPosition(0.0);
@@ -53,47 +59,53 @@ public abstract class Comp2TeleOp extends BRBLinearOpMode {
 //            }
 //        }else{
 //            whatColor = "NONE";
-        if(gamepad2.a){
-            intakClaw.setPosition(INTAKE_CLAW_OPEN);
-        }if(gamepad2.b){
-            intakClaw.setPosition(INTAKE_CLAW_CLOSED);
-        }
+            if(gamepad2.a){
+                intakClaw.setPosition(INTAKE_CLAW_OPEN);
+            }if(gamepad2.b){
+                intakClaw.setPosition(INTAKE_CLAW_CLOSED);
+            }
 
 
-        if(gamepad2.left_trigger>0){
-            readyForTransfer = false;
-            intakeArm.setPosition(ARM_READY_TO_GRAB);
-            intakClaw.setPosition(INTAKE_CLAW_OPEN);
-        }else if(gamepad2.right_trigger>0){
-            intakeArm.setPosition(ARM_GRAB);
-            sleep(300);
-            intakClaw.setPosition(INTAKE_CLAW_CLOSED);
-            intakeArm.setPosition(INSIDE_ROBOT_CLAW_HORIZONTAL);
-            sleep(700);
-            horizontalSlideLocation = HORIZONTAL_SLIDE_IN_LIMIT;
-            readyForTransfer = true;
-        }
+            if(gamepad2.left_trigger>0){
+                readyForTransfer = false;
+                intakeArm.setPosition(ARM_READY_TO_GRAB);
+                intakClaw.setPosition(INTAKE_CLAW_OPEN);
+            }else if(gamepad2.right_trigger>0){
+                intakeArm.setPosition(ARM_GRAB);
+                sleep(300);
+                intakClaw.setPosition(INTAKE_CLAW_CLOSED);
+                intakeArm.setPosition(INSIDE_ROBOT_CLAW_HORIZONTAL);
+                sleep(700);
+                horizontalSlideLocation = HORIZONTAL_SLIDE_IN_LIMIT;
+                readyForTransfer = true;
+            }
 //        if(horizontalSlideLocation == HORIZONTAL_SLIDE_IN_LIMIT){
 //            readyForTransfer = true;
 //        }
-        if (gamepad2.left_stick_x > 0 && horizontalSlideLocation > HORIZONTAL_SLIDE_OUT_LIMIT) {
-            horizontalSlideLocation -= gamepad2.left_stick_x * HORIZONTAL_JOYSTICK_MULTIPLIER;
-            readyForTransfer = false;
-        } else if (gamepad2.left_stick_x < 0 && horizontalSlideLocation < HORIZONTAL_SLIDE_IN_LIMIT) {
-            horizontalSlideLocation -= gamepad2.left_stick_x * HORIZONTAL_JOYSTICK_MULTIPLIER;
-            readyForTransfer = false;
-        }
+            if (gamepad2.left_stick_x > 0 && horizontalSlideLocation > HORIZONTAL_SLIDE_OUT_LIMIT) {
+                horizontalSlideLocation -= gamepad2.left_stick_x * HORIZONTAL_JOYSTICK_MULTIPLIER;
+                readyForTransfer = false;
+            } else if (gamepad2.left_stick_x < 0 && horizontalSlideLocation < HORIZONTAL_SLIDE_IN_LIMIT) {
+                horizontalSlideLocation -= gamepad2.left_stick_x * HORIZONTAL_JOYSTICK_MULTIPLIER;
+                readyForTransfer = false;
+            }
             motorHorizontalSlide.setTargetPosition(horizontalSlideLocation);
 
-        // Display the color values on the telemetry
-        telemetry.addData("Red", red);
-        telemetry.addData("Blue", blue);
-        telemetry.addData("Alpha", alpha);
-        telemetry.addData("What Color:", whatColor);
-        telemetry.addData("Motor position", motorHorizontalSlide.getCurrentPosition());
-        telemetry.addData("Servo claw", intakClaw.getPosition());
-        telemetry.addData("Joy Stick:", gamepad2.right_stick_x);
-        telemetry.addData("Ready for transfer", readyForTransfer);
+            // Display the color values on the telemetry
+            telemetry.addData("Red", red);
+            telemetry.addData("Blue", blue);
+            telemetry.addData("Alpha", alpha);
+            telemetry.addData("What Color:", whatColor);
+            telemetry.addData("Motor position", motorHorizontalSlide.getCurrentPosition());
+            telemetry.addData("Servo claw", intakClaw.getPosition());
+            telemetry.addData("Joy Stick:", gamepad2.right_stick_x);
+            telemetry.addData("Ready for transfer", readyForTransfer);
+
+        }
+    }
+
+    private void runHorizontalSlide() {
+
         telemetry.update();
     }
 
@@ -130,27 +142,6 @@ public abstract class Comp2TeleOp extends BRBLinearOpMode {
 
     }
 
-    private void runDriveTrain() {
-//        // calculating the power for each wheel with controller input
-//        double frontLeftPower = (gamepad1.left_stick_y + gamepad1.right_stick_x - gamepad1.left_stick_x)/1.5;
-//        double backLeftPower = (gamepad1.left_stick_y + gamepad1.right_stick_x + gamepad1.left_stick_x)/1.5;
-//        double frontRightPower = (gamepad1.left_stick_y - gamepad1.right_stick_x - gamepad1.left_stick_x)/1.5;
-//        double backRightPower = (gamepad1.left_stick_y - gamepad1.right_stick_x + gamepad1.left_stick_x)/1.5   ;
-//
-//        frontLeft.setPower(frontLeftPower);
-//        backLeft.setPower(backLeftPower);
-//        frontRight.setPower(frontRightPower);
-//        backRight.setPower(backRightPower);
-        driveTrain.setWeightedDrivePower(
-                new Pose2d(
-                        gamepad1.left_stick_y * DRIVE_MOTOR_SPEED,
-
-                        gamepad1.left_stick_x * DRIVE_MOTOR_SPEED,
-
-                        -gamepad1.right_stick_x * DRIVE_MOTOR_SPEED
-                )
-        );
-    }
 
 
 
