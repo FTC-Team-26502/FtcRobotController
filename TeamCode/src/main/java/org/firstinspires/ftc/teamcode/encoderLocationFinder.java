@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 
 @TeleOp
-public class LinearTester extends OpMode {
+public class encoderLocationFinder extends OpMode {
     protected DcMotor sideways;
     protected DcMotor up;
 

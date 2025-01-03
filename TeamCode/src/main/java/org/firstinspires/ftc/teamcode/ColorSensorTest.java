@@ -4,9 +4,9 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
+
 @TeleOp
-public class servoCode extends OpMode{
+public class ColorSensorTest extends OpMode{
     protected Servo claw;
     protected Servo spinner;
     protected ColorSensor color;

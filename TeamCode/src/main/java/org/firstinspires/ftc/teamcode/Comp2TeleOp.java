@@ -20,108 +20,13 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 @TeleOp(name="Dorina and Ananya", group="Second Competition")
 //  @Disabled
-public class SecondCompetitionTeleOp extends LinearOpMode {
+public class Comp2TeleOp extends BRBLinearOpMode {
 
-    protected boolean redAlliance = false;
-
-    //////////////////////////////////////////////
-    /// Drive Train motors.
-    private ElapsedTime runtime = new ElapsedTime();
-    private SampleMecanumDrive driveTrain = null;
-//    private DcMotor frontLeft = null;
-//    private DcMotor backLeft = null;
-//    private DcMotor frontRight = null;
-//    private DcMotor backRight = null;
-
-    //////////////////////////////////////////////
-    /// Color sensor
-    protected ColorSensor colorSensor = null;
-
-    //////////////////////////////////////////////
-    /// Lights
-    private Servo leftLight = null;
-    private Servo rightLight = null;
-    private final double BLUE = 0.65;
-    private final double RED = 0.35;
-    private final double YELLOW = 0.45;
-    private final double OFF = 0.0;
-
-
-    /////////////////////////////////////////////
-    /// Horizontal slide
-    private DcMotor motorHorizontalSlide = null;
-    private Servo intakClaw = null;
-    private Servo intakeArm = null;
-    private Servo intakeWrist = null;
-
-
-    /////////////////////////////////////////////
-    /// Horizontal slide
-    private Servo intakeWristVerticalSlide;
-    private DcMotor motorVerticalSlide = null;
-    private Servo clawVerticalSlide = null;
-    private Servo topArm = null;
-    //making the position for linear and vertical extension
-    private final int TOP_VERTICAL_SLIDE_POSITION = 3600;
-    private final int BOTTOM_VERTICAL_SLIDE_POSITION = 0;
-    private final int MIDDLE_VERTICAL_SLIDE_POSITION = 1600;
-    private final int VERTICAL_JOYSTICK_MULTIPLYER = 30;
-    private int verticalCurrentPosition = 0;
-
-    private final double MOTOR_SPEED = 0.8;
-
-    private final int HORIZONTAL_SLIDE_OUT_LIMIT = -850;
-    private final int HORIZONTAL_SLIDE_IN_LIMIT = 0;
-    private int horizontalSlideLocation = 0;
-    private int HORIZONTAL_JOYSTICK_MULTIPLYER = 20;
-
-    private boolean readyForTransfer = false;
-
-    private final double INTAKE_CLAW_OPEN = 1;
-    private final double INTAKE_CLAW_CLOSED = 0.8;
-    private final double INSIDED_ROBOT_CLAW_HORIZONTAL = 0.05;
-        private final double WRIST_START_POSITION = 0.8;
-    private final double ARM_READY_TO_GRAB = 0.55;
-    private final double ARM_GRAB = 0.7;
-
-    private final double TOP_CLAW_OPEN = 0.5;
-    private final double TOP_CLAW_CLOSE = 0;
-    private final double DROPPING_POSITION = 0.95;
-    private final double INSIDED_ROBOT_CLAW_VERTICAL = 0.07;
-
-
-
-    private AprilTagProcessor aprilTag;
-
-    private Position cameraPosition = new Position(DistanceUnit.INCH,
-            0, 0, 0, 0);
-    private YawPitchRollAngles cameraOrientation = new YawPitchRollAngles(AngleUnit.DEGREES,
-            0, -90, 0, 0);
-
-    private void initLights() {
-        leftLight = hardwareMap.get(Servo.class, "lights left");
-        rightLight = hardwareMap.get(Servo.class, "lights right");
+    protected Comp2TeleOp(boolean redAlliance, boolean samples) {
+        super(redAlliance, samples);
     }
 
 
-    private void initDriveTrain() {
-        driveTrain = new SampleMecanumDrive(hardwareMap);
-        driveTrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    }
-    private void initHorizontalSlide() {
-        motorHorizontalSlide = hardwareMap.get(DcMotor.class, "horizontalExtender");
-        intakClaw = hardwareMap.get(Servo.class, "intakeClaw");
-        intakeArm = hardwareMap.get(Servo.class, "intakeArm");
-        intakeWrist = hardwareMap.get(Servo.class,"intakeWrist");
-        motorHorizontalSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorHorizontalSlide.setTargetPosition(0);
-        motorHorizontalSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorHorizontalSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        motorHorizontalSlide.setPower(0.5);
-        intakeArm.setDirection(Servo.Direction.FORWARD);
-        intakeArm.setPosition(INSIDED_ROBOT_CLAW_HORIZONTAL);
-        intakeWrist.setPosition(WRIST_START_POSITION);
-    }
 
     private void runHorizontalSlide() {
         String whatColor = null;
@@ -194,18 +99,6 @@ public class SecondCompetitionTeleOp extends LinearOpMode {
         telemetry.update();
     }
 
-    private void initVerticalSlide() {
-        motorVerticalSlide = hardwareMap.get(DcMotor.class, "verticalViper");
-        clawVerticalSlide = hardwareMap.get(Servo.class, "topClaw");
-        topArm = hardwareMap.get(Servo.class, "topArm");
-        intakeWristVerticalSlide = hardwareMap.get(Servo.class, "topWrist");
-        motorVerticalSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorVerticalSlide.setTargetPosition(0);
-        motorVerticalSlide.setPower(0.7);
-        motorVerticalSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        topArm.setPosition(INSIDED_ROBOT_CLAW_VERTICAL);
-        clawVerticalSlide.setPosition(TOP_CLAW_OPEN);
-    }
 
     private void runVerticalSlide() {
         //moving the viper slide up to different positions
@@ -238,19 +131,6 @@ public class SecondCompetitionTeleOp extends LinearOpMode {
 
 
     }
-
-    private void initColorSensor() {
-        colorSensor = hardwareMap.get(ColorSensor.class, "color sensor");
-    }
-
-
-
-    /**
-     * Add telemetry about AprilTag detections.
-     */
-
-
-
 
     private void runDriveTrain() {
 //        // calculating the power for each wheel with controller input
