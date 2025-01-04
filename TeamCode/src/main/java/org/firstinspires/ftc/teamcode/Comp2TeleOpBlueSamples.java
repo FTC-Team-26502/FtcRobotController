@@ -2,14 +2,12 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "Red Samples")
-public class Comp2TeleOpRedSamples extends Comp2TeleOpSamples {
-
+@TeleOp(name = "Blue Samples")
+public class Comp2TeleOpBlueSamples extends Comp2TeleOpSamples{
     @Override
     public void runOpMode() {
-        initOpMode(true);
+        initOpMode(false);
         // Wait for the game to start (driver presses START)
         loopOpMode();
     }
-
 }

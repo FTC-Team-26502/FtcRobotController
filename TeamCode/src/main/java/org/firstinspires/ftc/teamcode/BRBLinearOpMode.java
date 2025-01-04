@@ -5,19 +5,17 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 public abstract class BRBLinearOpMode extends LinearOpMode {
+    public static final String YELLOW_COLOR = "yellow";
+    public static final String BLUE_COLOR = "blue";
+    public static final String RED_COLOR = "red";
+    public static final String NONE_COLOR = "NONE";
     protected boolean redAlliance = false;
-    protected boolean samples = true;
 
     //////////////////////////////////////////////
     /// Drive Train motors.
-//    private ElapsedTime runtime = new ElapsedTime();
     protected final double DRIVE_MOTOR_SPEED = 0.8;
     protected SampleMecanumDrive driveTrain = null;
 
@@ -47,11 +45,12 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     protected final int HORIZONTAL_SLIDE_IN_LIMIT = 0;
     protected final int HORIZONTAL_JOYSTICK_MULTIPLIER = 20;
 
-    protected int horizontalSlideLocation = 0;
+    protected int horizontalSlideLocation = HORIZONTAL_SLIDE_IN_LIMIT;
     protected DcMotor motorHorizontalSlide = null;
-    protected Servo intakClaw = null;
+    protected Servo intakeClaw = null;
     protected Servo intakeArm = null;
     protected Servo intakeWrist = null;
+    protected double intakeClawPosition = INTAKE_CLAW_OPEN;
 
     /////////////////////////////////////////////
     /// Vertical slide
@@ -62,6 +61,8 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     protected final double TOP_CLAW_OPEN = 0.5;
     protected final double TOP_CLAW_CLOSE = 0;
     protected final double DROPPING_POSITION = 0.95;
+    protected final double UP_POSITION = 0.5;
+    protected final double FRONT_POSITION = 0.25;
     protected final double INSIDE_ROBOT_CLAW_VERTICAL = 0.07;
     protected Servo topWrist;
     protected DcMotor motorVerticalSlide = null;
@@ -73,19 +74,18 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     /// Transfer
     protected boolean readyForTransfer = false;
 
-    protected void initOpMode(boolean redAlliance, boolean samples){
+    protected void initOpMode(boolean redAlliance){
         this.redAlliance = redAlliance;
-        this.samples = samples;
         // Init drive train
         driveTrain = new SampleMecanumDrive(hardwareMap);
         driveTrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         // Init horizontal slide
         motorHorizontalSlide = hardwareMap.get(DcMotor.class, "horizontalExtender");
-        intakClaw = hardwareMap.get(Servo.class, "intakeClaw");
+        intakeClaw = hardwareMap.get(Servo.class, "intakeClaw");
         intakeArm = hardwareMap.get(Servo.class, "intakeArm");
         intakeWrist = hardwareMap.get(Servo.class,"intakeWrist");
         motorHorizontalSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorHorizontalSlide.setTargetPosition(0);
+        motorHorizontalSlide.setTargetPosition(HORIZONTAL_SLIDE_IN_LIMIT);
         motorHorizontalSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorHorizontalSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorHorizontalSlide.setPower(0.5);
@@ -98,7 +98,7 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         topArm = hardwareMap.get(Servo.class, "topArm");
         topWrist = hardwareMap.get(Servo.class, "topWrist");
         motorVerticalSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorVerticalSlide.setTargetPosition(0);
+        motorVerticalSlide.setTargetPosition(BOTTOM_VERTICAL_POSITION);
         motorVerticalSlide.setPower(0.7);
         motorVerticalSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         topArm.setPosition(INSIDE_ROBOT_CLAW_VERTICAL);
@@ -113,27 +113,12 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     }
 
     /**
-     * Return the horizontal extender to inmost state and rotate the servos to the correct positions
-      */
-    public void transitionPart1(){
-        intakeArm.setPosition(ARM_GRAB);
-        sleep(300);
-        intakClaw.setPosition(INTAKE_CLAW_CLOSED);
-        intakeArm.setPosition(INSIDE_ROBOT_CLAW_HORIZONTAL);
-        sleep(700);
-        horizontalSlideLocation = HORIZONTAL_SLIDE_IN_LIMIT;
-        readyForTransfer = true;
-    }
-
-    /**
-     * Grab the block and turn the claw to be ready to deposit
+     * Prepares intake for grabbing sample
      */
-    protected void transitionPart2(){
-        topClaw.setPosition(TOP_CLAW_CLOSE);
-        sleep(700);
-        intakClaw.setPosition(INTAKE_CLAW_OPEN);
-        sleep(500);
-        topArm.setPosition(DROPPING_POSITION);
+    protected void transferPrep() {
+//        readyForTransfer = false;
+        intakeArm.setPosition(ARM_READY_TO_GRAB);
+        intakeClaw.setPosition(INTAKE_CLAW_OPEN);
     }
 
     /**
@@ -165,13 +150,28 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
 
         telemetry.addData("Green", green);
         if(red>blue && green>red && alpha>blue && red<200){
-            return "yellow";
+            return YELLOW_COLOR;
         }else if(red<blue && green<blue && alpha<blue){
-            return  "blue";
+            return BLUE_COLOR;
         }else if(red>blue && green<red && alpha<red){
-            return  "red";
+            return RED_COLOR;
         }else {
-            return "NONE";
+            return NONE_COLOR;
         }
+    }
+    protected void closeIntakeClaw() {
+        intakeClaw.setPosition(INTAKE_CLAW_CLOSED);
+        intakeClawPosition = INTAKE_CLAW_CLOSED;
+    }
+    protected void openIntakeClaw() {
+        intakeClaw.setPosition(INTAKE_CLAW_OPEN);
+        intakeClawPosition = INTAKE_CLAW_OPEN;
+    }
+
+    protected void dumpState() {
+        telemetry.addData("Motor position", motorHorizontalSlide.getCurrentPosition());
+        telemetry.addData("Servo claw", intakeClaw.getPosition());
+        telemetry.addData("Joy Stick:", gamepad2.right_stick_x);
+        telemetry.addData("Ready for transfer", readyForTransfer);
     }
 }
