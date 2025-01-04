@@ -40,7 +40,7 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     protected final double INTAKE_CLAW_CLOSED = 0.8;
     protected final double INSIDE_ROBOT_CLAW_HORIZONTAL = 0.05;
     protected final double WRIST_START_POSITION = 0.8;
-    protected final double ARM_READY_TO_GRAB = 0.55;
+    protected final double ARM_READY_TO_GRAB = 0.5;
     protected final double ARM_GRAB = 0.7;
     protected final int HORIZONTAL_SLIDE_OUT_LIMIT = -850;
     protected final int HORIZONTAL_SLIDE_IN_LIMIT = 0;
@@ -62,10 +62,12 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     protected final int VERTICAL_JOYSTICK_MULTIPLIER = 30;
     protected final double TOP_CLAW_OPEN = 0.5;
     protected final double TOP_CLAW_CLOSE = 0;
-    protected final double DROPPING_POSITION = 0.8;
-    protected final double UP_POSITION = 0.5;
-    protected final double FRONT_POSITION = 0.25;
-    protected final double INSIDE_ROBOT_CLAW_VERTICAL = 0.05;
+    protected final double DROPPING_POSITION = 0.3;
+    protected final double UP_POSITION = 0.45;
+    protected final double FRONT_POSITION = 0.17;
+    protected final double INSIDE_ROBOT_CLAW_VERTICAL = 0.02;
+    protected final double WRIST_START_POSITION_TOP = 0.8;
+    protected final double WRIST_HANG_POSITION = 0.2;
     protected Servo topWrist;
     protected DcMotor motorVerticalSlide = null;
     protected Servo topClaw = null;
@@ -106,6 +108,7 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         motorVerticalSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         topArm.setPosition(INSIDE_ROBOT_CLAW_VERTICAL);
         topClaw.setPosition(TOP_CLAW_OPEN);
+        topWrist.setPosition(WRIST_START_POSITION_TOP);
         // Init lights
 //        leftLight = hardwareMap.get(Servo.class, "lights left");
 //        rightLight = hardwareMap.get(Servo.class, "lights right");

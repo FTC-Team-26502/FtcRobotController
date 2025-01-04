@@ -86,10 +86,12 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
             motorHorizontalSlide.setTargetPosition(horizontalSlideLocation);
             //moving the viper slide up to different positions
             if (gamepad2.right_stick_y > 0 && verticalCurrentPosition < TOP_VERTICAL_POSITION) {
-                verticalCurrentPosition -= gamepad2.right_stick_y * VERTICAL_JOYSTICK_MULTIPLIER;
+                verticalCurrentPosition += gamepad2.right_stick_y * VERTICAL_JOYSTICK_MULTIPLIER;
             } else if (gamepad2.right_stick_y < 0 && verticalCurrentPosition > BOTTOM_VERTICAL_POSITION) {
-                verticalCurrentPosition -= gamepad2.right_stick_y * VERTICAL_JOYSTICK_MULTIPLIER;
+                verticalCurrentPosition += gamepad2.right_stick_y * VERTICAL_JOYSTICK_MULTIPLIER;
             }
+            motorVerticalSlide.setTargetPosition(verticalCurrentPosition);
+
             // state transitions
             telemetry.addData("Current State ", getStateName() );
             if (currentState == Comp2TeleOpSpecimens.State.INITIAL) {
@@ -98,6 +100,11 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
                     intakeArm.setPosition(ARM_READY_TO_GRAB);
                     intakeClaw.setPosition(INTAKE_CLAW_OPEN);
                     currentState = Comp2TeleOpSpecimens.State.CLAW_READY_TO_GRAB;
+                }
+                if(gamepad2.left_bumper){
+                    topArm.setPosition(SPECIMEN_GRAB);
+                    topClaw.setPosition(TOP_CLAW_OPEN);
+                    currentState = Comp2TeleOpSpecimens.State.DROP_SAMPLE;
                 }
             }
             if (currentState == Comp2TeleOpSpecimens.State.CLAW_READY_TO_GRAB) {
@@ -115,6 +122,7 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
                     } else {
                         openIntakeClaw();
                     }
+                    intakeWrist.setPosition(WRIST_START_POSITION);
                     // position intake claw inside robot
                     intakeArm.setPosition(INSIDE_ROBOT_CLAW_HORIZONTAL);
                     sleep(700);
@@ -128,6 +136,12 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
                     intakeArm.setPosition(ARM_READY_TO_GRAB);
                     intakeClaw.setPosition(INTAKE_CLAW_OPEN);
                     currentState = Comp2TeleOpSpecimens.State.CLAW_READY_TO_GRAB;
+                }
+                if(gamepad2.b){
+                    intakeWrist.setPosition(WRIST_START_POSITION - 0.3);
+                }
+                if(gamepad2.a){
+                    intakeWrist.setPosition(WRIST_START_POSITION);
                 }
             }
             if (currentState == Comp2TeleOpSpecimens.State.GRAB_AND_RETRACT){
@@ -144,6 +158,8 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
                     intakeArm.setPosition(ARM_READY_TO_GRAB);
                     intakeClaw.setPosition(INTAKE_CLAW_OPEN);
                     currentState = Comp2TeleOpSpecimens.State.CLAW_READY_TO_GRAB;
+                    topArm.setPosition(INSIDE_ROBOT_CLAW_VERTICAL);
+                    topClaw.setPosition(TOP_CLAW_OPEN);
                 }
             }
             if (currentState == Comp2TeleOpSpecimens.State.TRANSFER_TO_TOP_CLAW){
@@ -152,14 +168,28 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
                     topClaw.setPosition(TOP_CLAW_OPEN);
                     currentState = Comp2TeleOpSpecimens.State.DROP_SAMPLE;
                 }
+                if(gamepad2.left_trigger>0){ // no transfer, reset positions
+                    //        readyForTransfer = false;
+                    intakeArm.setPosition(ARM_READY_TO_GRAB);
+                    intakeClaw.setPosition(INTAKE_CLAW_OPEN);
+                    currentState = Comp2TeleOpSpecimens.State.CLAW_READY_TO_GRAB;
+
+                }
             }
             if (currentState == Comp2TeleOpSpecimens.State.DROP_SAMPLE){
                 if(gamepad2.right_bumper){
                     topClaw.setPosition(TOP_CLAW_CLOSE);
-                    sleep(300);
+                    sleep(700);
                     topArm.setPosition(FRONT_POSITION);
                     sleep(300);
+                    topWrist.setPosition(WRIST_HANG_POSITION);
+                    sleep(300);
                     currentState = Comp2TeleOpSpecimens.State.OBTAIN_SPECIMENS;
+                }
+                if(gamepad2.left_bumper){
+                    topArm.setPosition(SPECIMEN_GRAB);
+                    topClaw.setPosition(TOP_CLAW_OPEN);
+                    currentState = Comp2TeleOpSpecimens.State.DROP_SAMPLE;
                 }
             }
             if (currentState == State.OBTAIN_SPECIMENS){
@@ -170,6 +200,12 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
             }
             if (currentState == State.VIPER_READY_TO_HANG){
                 if(gamepad2.a){
+                    topClaw.setPosition(TOP_CLAW_OPEN);
+                    sleep(300);
+                    topWrist.setPosition(WRIST_HANG_POSITION);
+                    sleep(300);
+                    topArm.setPosition(INSIDE_ROBOT_CLAW_VERTICAL);
+                    sleep(500);
                     currentState = State.INITIAL;
                 }
             }
