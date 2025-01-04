@@ -18,6 +18,7 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     /// Drive Train motors.
     protected final double DRIVE_MOTOR_SPEED = 0.8;
     protected SampleMecanumDrive driveTrain = null;
+    protected double driveSpeed = DRIVE_MOTOR_SPEED;
 
     //////////////////////////////////////////////
     /// Color sensor
@@ -44,6 +45,7 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     protected final int HORIZONTAL_SLIDE_OUT_LIMIT = -850;
     protected final int HORIZONTAL_SLIDE_IN_LIMIT = 0;
     protected final int HORIZONTAL_JOYSTICK_MULTIPLIER = 20;
+    protected final double SPECIMEN_GRAB = 1;
 
     protected int horizontalSlideLocation = HORIZONTAL_SLIDE_IN_LIMIT;
     protected DcMotor motorHorizontalSlide = null;
@@ -54,16 +56,16 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
 
     /////////////////////////////////////////////
     /// Vertical slide
-    protected final int TOP_VERTICAL_POSITION = 3600;
+    protected final int TOP_VERTICAL_POSITION = 3500;
     protected final int BOTTOM_VERTICAL_POSITION = 0;
-    protected final int MIDDLE_VERTICAL_POSITION = 1600;
+    protected final int MIDDLE_VERTICAL_POSITION = 1400;
     protected final int VERTICAL_JOYSTICK_MULTIPLIER = 30;
     protected final double TOP_CLAW_OPEN = 0.5;
     protected final double TOP_CLAW_CLOSE = 0;
-    protected final double DROPPING_POSITION = 0.95;
+    protected final double DROPPING_POSITION = 0.8;
     protected final double UP_POSITION = 0.5;
     protected final double FRONT_POSITION = 0.25;
-    protected final double INSIDE_ROBOT_CLAW_VERTICAL = 0.07;
+    protected final double INSIDE_ROBOT_CLAW_VERTICAL = 0.05;
     protected Servo topWrist;
     protected DcMotor motorVerticalSlide = null;
     protected Servo topClaw = null;
@@ -76,6 +78,7 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
 
     protected void initOpMode(boolean redAlliance){
         this.redAlliance = redAlliance;
+
         // Init drive train
         driveTrain = new SampleMecanumDrive(hardwareMap);
         driveTrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -99,26 +102,17 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         topWrist = hardwareMap.get(Servo.class, "topWrist");
         motorVerticalSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorVerticalSlide.setTargetPosition(BOTTOM_VERTICAL_POSITION);
-        motorVerticalSlide.setPower(0.7);
+        motorVerticalSlide.setPower(0.5);
         motorVerticalSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         topArm.setPosition(INSIDE_ROBOT_CLAW_VERTICAL);
         topClaw.setPosition(TOP_CLAW_OPEN);
         // Init lights
-        leftLight = hardwareMap.get(Servo.class, "lights left");
-        rightLight = hardwareMap.get(Servo.class, "lights right");
+//        leftLight = hardwareMap.get(Servo.class, "lights left");
+//        rightLight = hardwareMap.get(Servo.class, "lights right");
         // Init color sensor
         colorSensor = hardwareMap.get(ColorSensor.class, "color sensor");
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-    }
-
-    /**
-     * Prepares intake for grabbing sample
-     */
-    protected void transferPrep() {
-//        readyForTransfer = false;
-        intakeArm.setPosition(ARM_READY_TO_GRAB);
-        intakeClaw.setPosition(INTAKE_CLAW_OPEN);
     }
 
     /**

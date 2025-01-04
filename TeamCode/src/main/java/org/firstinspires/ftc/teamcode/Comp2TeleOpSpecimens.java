@@ -20,16 +20,61 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
     protected void loopOpMode() {
         waitForStart();
         while (true) {
+            driveSpeed = DRIVE_MOTOR_SPEED + gamepad2.right_trigger - gamepad2.left_trigger;
             // move the robot
             driveTrain.setWeightedDrivePower(
                     new Pose2d(
-                            gamepad1.left_stick_y * DRIVE_MOTOR_SPEED,
+                            gamepad1.left_stick_y * driveSpeed,
 
-                            gamepad1.left_stick_x * DRIVE_MOTOR_SPEED,
+                            -gamepad1.left_stick_x * driveSpeed,
 
-                            -gamepad1.right_stick_x * DRIVE_MOTOR_SPEED
+                            -gamepad1.right_stick_x * driveSpeed
                     )
             );
+            if(gamepad1.dpad_left){
+                driveTrain.setWeightedDrivePower(
+                        new Pose2d(
+                                -driveSpeed,
+
+                                0,
+
+                                0
+                        )
+                );
+            }
+            if(gamepad1.dpad_right){
+                driveTrain.setWeightedDrivePower(
+                        new Pose2d(
+                                driveSpeed,
+
+                                0,
+
+                                0
+                        )
+                );
+            }
+            if(gamepad1.dpad_up){
+                driveTrain.setWeightedDrivePower(
+                        new Pose2d(
+                                0,
+
+                                -driveSpeed,
+
+                                0
+                        )
+                );
+            }
+            if(gamepad1.dpad_down){
+                driveTrain.setWeightedDrivePower(
+                        new Pose2d(
+                                0,
+
+                                driveSpeed,
+
+                                0
+                        )
+                );
+            }
             // moving horizontal slide using the left joystick
             if (gamepad2.left_stick_x > 0 && horizontalSlideLocation > HORIZONTAL_SLIDE_OUT_LIMIT) {
                 horizontalSlideLocation -= gamepad2.left_stick_x * HORIZONTAL_JOYSTICK_MULTIPLIER;
@@ -49,7 +94,9 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
             telemetry.addData("Current State ", getStateName() );
             if (currentState == Comp2TeleOpSpecimens.State.INITIAL) {
                 if(gamepad2.left_trigger>0){ // no transfer, reset positions
-                    transferPrep();
+                    //        readyForTransfer = false;
+                    intakeArm.setPosition(ARM_READY_TO_GRAB);
+                    intakeClaw.setPosition(INTAKE_CLAW_OPEN);
                     currentState = Comp2TeleOpSpecimens.State.CLAW_READY_TO_GRAB;
                 }
             }
@@ -76,6 +123,12 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
                     readyForTransfer = true;
                     currentState = Comp2TeleOpSpecimens.State.GRAB_AND_RETRACT;
                 }
+                if(gamepad2.left_trigger>0){ // no transfer, reset positions
+                    //        readyForTransfer = false;
+                    intakeArm.setPosition(ARM_READY_TO_GRAB);
+                    intakeClaw.setPosition(INTAKE_CLAW_OPEN);
+                    currentState = Comp2TeleOpSpecimens.State.CLAW_READY_TO_GRAB;
+                }
             }
             if (currentState == Comp2TeleOpSpecimens.State.GRAB_AND_RETRACT){
                 if(!motorHorizontalSlide.isBusy() && gamepad2.y) {
@@ -86,9 +139,16 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
                     topArm.setPosition(DROPPING_POSITION);
                     currentState = Comp2TeleOpSpecimens.State.TRANSFER_TO_TOP_CLAW;
                 }
+                if(gamepad2.left_trigger>0){ // no transfer, reset positions
+                    //        readyForTransfer = false;
+                    intakeArm.setPosition(ARM_READY_TO_GRAB);
+                    intakeClaw.setPosition(INTAKE_CLAW_OPEN);
+                    currentState = Comp2TeleOpSpecimens.State.CLAW_READY_TO_GRAB;
+                }
             }
             if (currentState == Comp2TeleOpSpecimens.State.TRANSFER_TO_TOP_CLAW){
                 if(gamepad2.left_bumper){
+                    topArm.setPosition(SPECIMEN_GRAB);
                     topClaw.setPosition(TOP_CLAW_OPEN);
                     currentState = Comp2TeleOpSpecimens.State.DROP_SAMPLE;
                 }

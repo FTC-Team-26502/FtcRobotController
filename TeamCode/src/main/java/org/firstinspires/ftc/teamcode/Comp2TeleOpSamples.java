@@ -17,16 +17,63 @@ public abstract class Comp2TeleOpSamples extends Comp2TeleOp {
     protected void loopOpMode() {
         waitForStart();
         while (true) {
+            driveSpeed = DRIVE_MOTOR_SPEED + gamepad2.right_trigger - gamepad2.left_trigger;
             // move the robot
             driveTrain.setWeightedDrivePower(
                     new Pose2d(
-                            gamepad1.left_stick_y * DRIVE_MOTOR_SPEED,
+                            gamepad1.left_stick_y * driveSpeed,
 
-                            gamepad1.left_stick_x * DRIVE_MOTOR_SPEED,
+                            -gamepad1.left_stick_x * driveSpeed,
 
-                            -gamepad1.right_stick_x * DRIVE_MOTOR_SPEED
+                            -gamepad1.right_stick_x * driveSpeed
                     )
             );
+            if(gamepad1.dpad_left){
+                driveTrain.setWeightedDrivePower(
+                        new Pose2d(
+                                -driveSpeed,
+
+                                0,
+
+                                0
+                        )
+                );
+            }
+            if(gamepad1.dpad_right){
+                driveTrain.setWeightedDrivePower(
+                        new Pose2d(
+                                driveSpeed,
+
+                                0,
+
+                                0
+                        )
+                );
+            }
+            if(gamepad1.dpad_up){
+                driveTrain.setWeightedDrivePower(
+                        new Pose2d(
+                                0,
+
+                                -driveSpeed,
+
+                                0
+                        )
+                );
+            }
+            if(gamepad1.dpad_down){
+                driveTrain.setWeightedDrivePower(
+                        new Pose2d(
+                                0,
+
+                                driveSpeed,
+
+                                0
+                        )
+                );
+            }
+
+
             // moving horizontal slide using the left joystick
             if (gamepad2.left_stick_x > 0 && horizontalSlideLocation > HORIZONTAL_SLIDE_OUT_LIMIT) {
                 horizontalSlideLocation -= gamepad2.left_stick_x * HORIZONTAL_JOYSTICK_MULTIPLIER;
@@ -42,11 +89,13 @@ public abstract class Comp2TeleOpSamples extends Comp2TeleOp {
             } else if (gamepad2.right_stick_y < 0 && verticalCurrentPosition > BOTTOM_VERTICAL_POSITION) {
                 verticalCurrentPosition -= gamepad2.right_stick_y * VERTICAL_JOYSTICK_MULTIPLIER;
             }
+
             telemetry.addData("Current State ", getStateName() );
             // state transitions
             if (currentState == State.INITIAL) {
-                if(gamepad2.left_trigger>0){ // no transfer, reset positions
-                    transferPrep();
+                if(gamepad2.left_trigger>0){
+                    intakeArm.setPosition(ARM_READY_TO_GRAB);
+                    intakeClaw.setPosition(INTAKE_CLAW_OPEN);
                     currentState = State.CLAW_READY_TO_GRAB;
                 }
             }
@@ -86,13 +135,23 @@ public abstract class Comp2TeleOpSamples extends Comp2TeleOp {
 
                     currentState = State.TRANSFER_TO_TOP;
                 }
+                if(gamepad2.left_trigger>0){
+                    intakeArm.setPosition(ARM_READY_TO_GRAB);
+                    intakeClaw.setPosition(INTAKE_CLAW_OPEN);
+                    currentState = State.CLAW_READY_TO_GRAB;
+                }
             }
             if (currentState == State.TRANSFER_TO_TOP){
                 if(gamepad2.left_bumper){
                     viperSlideUp();
-                    sleep(1000);
+                    sleep(3000);
                     topArm.setPosition(DROPPING_POSITION);
                     currentState = State.READY_TO_DROP;
+                }
+                if(gamepad2.left_trigger>0){
+                    intakeArm.setPosition(ARM_READY_TO_GRAB);
+                    intakeClaw.setPosition(INTAKE_CLAW_OPEN);
+                    currentState = State.CLAW_READY_TO_GRAB;
                 }
             }
             if (currentState == State.READY_TO_DROP){
