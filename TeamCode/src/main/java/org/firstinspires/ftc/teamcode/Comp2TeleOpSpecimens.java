@@ -19,78 +19,12 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
 
     protected void loopOpMode() {
         waitForStart();
-        while (true) {
-            driveSpeed = DRIVE_MOTOR_SPEED + gamepad2.right_trigger - gamepad2.left_trigger;
-            // move the robot
-            driveTrain.setWeightedDrivePower(
-                    new Pose2d(
-                            -gamepad1.left_stick_y * driveSpeed,
-
-                            gamepad1.left_stick_x * driveSpeed,
-
-                            -gamepad1.right_stick_x * driveSpeed
-                    )
-            );
-            if(gamepad1.dpad_left){
-                driveTrain.setWeightedDrivePower(
-                        new Pose2d(
-                                -driveSpeed,
-
-                                0,
-
-                                0
-                        )
-                );
-            }
-            if(gamepad1.dpad_right){
-                driveTrain.setWeightedDrivePower(
-                        new Pose2d(
-                                driveSpeed,
-
-                                0,
-
-                                0
-                        )
-                );
-            }
-            if(gamepad1.dpad_up){
-                driveTrain.setWeightedDrivePower(
-                        new Pose2d(
-                                0,
-
-                                -driveSpeed,
-
-                                0
-                        )
-                );
-            }
-            if(gamepad1.dpad_down){
-                driveTrain.setWeightedDrivePower(
-                        new Pose2d(
-                                0,
-
-                                driveSpeed,
-
-                                0
-                        )
-                );
-            }
+        while (opModeIsActive()) {
+           driveControlls();
             // moving horizontal slide using the left joystick
-            if (gamepad2.left_stick_x > 0 && horizontalSlideLocation > HORIZONTAL_SLIDE_OUT_LIMIT) {
-                horizontalSlideLocation -= gamepad2.left_stick_x * HORIZONTAL_JOYSTICK_MULTIPLIER;
-                readyForTransfer = false;
-            } else if (gamepad2.left_stick_x < 0 && horizontalSlideLocation < HORIZONTAL_SLIDE_IN_LIMIT) {
-                horizontalSlideLocation -= gamepad2.left_stick_x * HORIZONTAL_JOYSTICK_MULTIPLIER;
-                readyForTransfer = false;
-            }
-            motorHorizontalSlide.setTargetPosition(horizontalSlideLocation);
+            horizontalControls();
             //moving the viper slide up to different positions
-            if (gamepad2.right_stick_y > 0 && verticalCurrentPosition > TOP_VERTICAL_POSITION) {
-                verticalCurrentPosition -= gamepad2.right_stick_y * VERTICAL_JOYSTICK_MULTIPLIER;
-            } else if (gamepad2.right_stick_y < 0 && verticalCurrentPosition < BOTTOM_VERTICAL_POSITION) {
-                verticalCurrentPosition -= gamepad2.right_stick_y * VERTICAL_JOYSTICK_MULTIPLIER;
-            }
-            motorVerticalSlide.setTargetPosition(verticalCurrentPosition);
+            motorVerticalController();
 
             // state transitions
             telemetry.addData("Current State ", getStateName() );
@@ -101,11 +35,11 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
                     intakeClaw.setPosition(INTAKE_CLAW_OPEN);
                     currentState = Comp2TeleOpSpecimens.State.CLAW_READY_TO_GRAB;
                 }
-                if(gamepad2.left_bumper){
-                    topArm.setPosition(SPECIMEN_GRAB);
-                    topClaw.setPosition(TOP_CLAW_OPEN);
-                    currentState = Comp2TeleOpSpecimens.State.DROP_SAMPLE;
-                }
+//                if(gamepad2.left_bumper){
+//                    topArm.setPosition(SPECIMEN_GRAB);
+//                    topClaw.setPosition(TOP_CLAW_OPEN);
+//                    currentState = Comp2TeleOpSpecimens.State.DROP_SAMPLE;
+//                }
             }
             if (currentState == Comp2TeleOpSpecimens.State.CLAW_READY_TO_GRAB) {
                 if(gamepad2.right_trigger>0){
@@ -210,6 +144,8 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
             telemetry.update();
         }
     }
+
+
 
     protected String getStateName() {
         if (currentState == State.INITIAL){

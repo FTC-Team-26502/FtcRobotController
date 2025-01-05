@@ -16,80 +16,10 @@ public abstract class Comp2TeleOpSamples extends Comp2TeleOp {
 
     protected void loopOpMode() {
         waitForStart();
-        while (true) {
-            driveSpeed = DRIVE_MOTOR_SPEED + gamepad2.right_trigger - gamepad2.left_trigger;
-            // move the robot
-            driveTrain.setWeightedDrivePower(
-                    new Pose2d(
-                            gamepad1.left_stick_y * driveSpeed,
-
-                            -gamepad1.left_stick_x * driveSpeed,
-
-                            -gamepad1.right_stick_x * driveSpeed
-                    )
-            );
-            if(gamepad1.dpad_left){
-                driveTrain.setWeightedDrivePower(
-                        new Pose2d(
-                                -driveSpeed,
-
-                                0,
-
-                                0
-                        )
-                );
-            }
-            if(gamepad1.dpad_right){
-                driveTrain.setWeightedDrivePower(
-                        new Pose2d(
-                                driveSpeed,
-
-                                0,
-
-                                0
-                        )
-                );
-            }
-            if(gamepad1.dpad_up){
-                driveTrain.setWeightedDrivePower(
-                        new Pose2d(
-                                0,
-
-                                -driveSpeed,
-
-                                0
-                        )
-                );
-            }
-            if(gamepad1.dpad_down){
-                driveTrain.setWeightedDrivePower(
-                        new Pose2d(
-                                0,
-
-                                driveSpeed,
-
-                                0
-                        )
-                );
-            }
-
-
-            // moving horizontal slide using the left joystick
-            if (gamepad2.left_stick_x > 0 && horizontalSlideLocation > HORIZONTAL_SLIDE_OUT_LIMIT) {
-                horizontalSlideLocation -= gamepad2.left_stick_x * HORIZONTAL_JOYSTICK_MULTIPLIER;
-                readyForTransfer = false;
-            } else if (gamepad2.left_stick_x < 0 && horizontalSlideLocation < HORIZONTAL_SLIDE_IN_LIMIT) {
-                horizontalSlideLocation -= gamepad2.left_stick_x * HORIZONTAL_JOYSTICK_MULTIPLIER;
-                readyForTransfer = false;
-            }
-            motorHorizontalSlide.setTargetPosition(horizontalSlideLocation);
-            // moving the viper slide up to different positions
-            if (gamepad2.right_stick_y > 0 && verticalCurrentPosition < TOP_VERTICAL_POSITION) {
-                verticalCurrentPosition -= gamepad2.right_stick_y * VERTICAL_JOYSTICK_MULTIPLIER;
-            } else if (gamepad2.right_stick_y < 0 && verticalCurrentPosition > BOTTOM_VERTICAL_POSITION) {
-                verticalCurrentPosition -= gamepad2.right_stick_y * VERTICAL_JOYSTICK_MULTIPLIER;
-            }
-
+        while (opModeIsActive()) {
+            driveControlls();
+            horizontalControls();
+            motorVerticalController();
             telemetry.addData("Current State ", getStateName() );
             // state transitions
             if (currentState == State.INITIAL) {
@@ -169,6 +99,10 @@ public abstract class Comp2TeleOpSamples extends Comp2TeleOp {
             telemetry.update();
         }
     }
+
+
+
+
     protected String getStateName() {
         if (currentState == State.INITIAL){
             return "Initial State";
