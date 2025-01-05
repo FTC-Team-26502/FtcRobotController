@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ReadWriteFile;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -26,9 +25,13 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
 
     //////////////////////////////////////////////
     /// Drive Train motors.
-    protected final double DRIVE_MOTOR_SPEED = 0.8;
+    protected final double DRIVE_MOTOR_SPEED = 0.5;
     protected SampleMecanumDrive driveTrain = null;
     protected double driveSpeed = DRIVE_MOTOR_SPEED;
+    protected double currentMotorSpeedY = 0;
+    protected double currentMotorSpeedX = 0;
+    protected double currentMotorSpeedHeading = 0;
+    protected final double AMOUNT_OF_CHANGE = 0.001;
 
     //////////////////////////////////////////////
     /// Color sensor
@@ -208,14 +211,17 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     }
     protected void driveControlls() {
         driveSpeed = DRIVE_MOTOR_SPEED + gamepad2.right_trigger - gamepad2.left_trigger;
+        currentMotorSpeedY =  speedIncrease(currentMotorSpeedY, gamepad1.left_stick_y, AMOUNT_OF_CHANGE);
+        currentMotorSpeedX = speedIncrease(currentMotorSpeedX, gamepad1.left_stick_x, AMOUNT_OF_CHANGE);
+        currentMotorSpeedHeading = speedIncrease(currentMotorSpeedHeading, gamepad1.right_stick_x, AMOUNT_OF_CHANGE);
         // move the robot
         driveTrain.setWeightedDrivePower(
                 new Pose2d(
-                        gamepad1.left_stick_y * driveSpeed,
+                        currentMotorSpeedY,
 
-                        -gamepad1.left_stick_x * driveSpeed,
+                        currentMotorSpeedX,
 
-                        -gamepad1.right_stick_x * driveSpeed
+                        currentMotorSpeedHeading
                 )
         );
         if(gamepad1.dpad_left){
@@ -262,7 +268,23 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
                     )
             );
         }
+        telemetry.addData("Y speed", currentMotorSpeedY );
+        telemetry.addData("X speed", currentMotorSpeedX );
+        telemetry.addData("Turn speed", currentMotorSpeedHeading );
     }
+
+    private double speedIncrease(double MotorSpeed, float gamepad1, double amountOfChange) {
+        if (MotorSpeed < gamepad1) {
+            MotorSpeed += amountOfChange;
+
+        } else {
+            if (MotorSpeed > gamepad1) {
+                MotorSpeed -= amountOfChange;
+            }
+        }
+        return MotorSpeed;
+    }
+
     protected void horizontalControls() {
         if (gamepad2.left_stick_x > 0 && horizontalSlideLocation > HORIZONTAL_SLIDE_OUT_LIMIT) {
             horizontalSlideLocation -= gamepad2.left_stick_x * HORIZONTAL_JOYSTICK_MULTIPLIER;
@@ -305,6 +327,7 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
             ReadWriteFile.writeFile(new File("l" + System.currentTimeMillis() + ".log"), fileContent);
         }
     }
+
 
 
 }
