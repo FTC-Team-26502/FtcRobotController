@@ -62,7 +62,7 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
                     sleep(700);
                     // takes the whole arm in
                     horizontalSlideLocation = HORIZONTAL_SLIDE_IN_LIMIT;
-                    readyForTransfer = true;
+//                    readyForTransfer = true;
                     currentState = Comp2TeleOpSpecimens.State.GRAB_AND_RETRACT;
                 }
                 if(gamepad2.left_trigger>0){ // no transfer, reset positions

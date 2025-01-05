@@ -51,12 +51,13 @@ public abstract class Comp2TeleOpSamples extends Comp2TeleOp {
                     // takes the whole arm in
                     horizontalSlideLocation = HORIZONTAL_SLIDE_IN_LIMIT;
                     currentState = State.GRAB_AND_RETRACT;
+                    saveFrame();
                 }
             }
             if (currentState == State.GRAB_AND_RETRACT){
                 if(!motorHorizontalSlide.isBusy() && gamepad2.y) {
                     // only samples
-                    readyForTransfer = false;
+//                    readyForTransfer = false;
                     topClaw.setPosition(TOP_CLAW_CLOSE);
                     sleep(700);
                     intakeClaw.setPosition(INTAKE_CLAW_OPEN);
@@ -98,6 +99,7 @@ public abstract class Comp2TeleOpSamples extends Comp2TeleOp {
             dumpState();
             telemetry.update();
         }
+        closeDataCollection();
     }
 
 

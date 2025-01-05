@@ -1,12 +1,21 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Size;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ReadWriteFile;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.vision.VisionPortal;
+
+import java.io.File;
+import java.util.Locale;
 
 public abstract class BRBLinearOpMode extends LinearOpMode {
     public static final String YELLOW_COLOR = "yellow";
@@ -77,7 +86,18 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
 
     /////////////////////////////////////////////
     /// Transfer
-    protected boolean readyForTransfer = false;
+    //protected boolean readyForTransfer = false;
+
+    ////////////////////////////////////////////
+    /// Webcam
+    protected final boolean COLLECT_DATA = false;
+    protected final int RESOLUTION_WIDTH = 640;
+    protected final int RESOLUTION_HEIGHT = 480;
+    protected VisionPortal portal = null;
+    protected long lastCaptureTime = System.currentTimeMillis();
+    protected String fileContent = "";
+    protected int countRows = 0;
+
 
     protected void initOpMode(boolean redAlliance){
         this.redAlliance = redAlliance;
@@ -115,6 +135,15 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
 //        rightLight = hardwareMap.get(Servo.class, "lights right");
         // Init color sensor
         colorSensor = hardwareMap.get(ColorSensor.class, "color sensor");
+        // webcam
+        if (COLLECT_DATA)
+        {
+            portal = new VisionPortal.Builder()
+                    .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+                    .setCameraResolution(new Size(RESOLUTION_WIDTH, RESOLUTION_HEIGHT))
+                    .build();
+        }
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
     }
@@ -237,10 +266,10 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     protected void horizontalControls() {
         if (gamepad2.left_stick_x > 0 && horizontalSlideLocation > HORIZONTAL_SLIDE_OUT_LIMIT) {
             horizontalSlideLocation -= gamepad2.left_stick_x * HORIZONTAL_JOYSTICK_MULTIPLIER;
-            readyForTransfer = false;
+//            readyForTransfer = false;
         } else if (gamepad2.left_stick_x < 0 && horizontalSlideLocation < HORIZONTAL_SLIDE_IN_LIMIT) {
             horizontalSlideLocation -= gamepad2.left_stick_x * HORIZONTAL_JOYSTICK_MULTIPLIER;
-            readyForTransfer = false;
+//            readyForTransfer = false;
         }
         motorHorizontalSlide.setTargetPosition(horizontalSlideLocation);
     }
@@ -248,10 +277,34 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         telemetry.addData("Motor position", motorHorizontalSlide.getCurrentPosition());
         telemetry.addData("Servo claw", intakeClaw.getPosition());
         telemetry.addData("Joy Stick:", gamepad2.right_stick_y);
-        telemetry.addData("Ready for transfer", readyForTransfer);
+//        telemetry.addData("Ready for transfer", readyForTransfer);
         telemetry.addData("Viper position", motorVerticalSlide.getCurrentPosition());
         telemetry.addData("Viper target position", motorVerticalSlide.getTargetPosition());
         telemetry.addData("Current Position Variable", verticalCurrentPosition);
 
     }
+
+    protected void saveFrame() {
+        if ( COLLECT_DATA && System.currentTimeMillis() - lastCaptureTime > 500 ) {
+            String filename = String.format(Locale.US, "c%d", lastCaptureTime);
+            portal.saveNextFrameRaw(filename);
+            lastCaptureTime = System.currentTimeMillis();
+            fileContent += String.format(Locale.US, "%s, %f, %f, %f\n",
+                    filename,
+                    topArm.getPosition(), topClaw.getPosition(), topWrist.getPosition());
+            countRows ++;
+            if (countRows > 1000) {
+                ReadWriteFile.writeFile(new File("l" + System.currentTimeMillis() + ".log"), fileContent);
+                countRows = 0;
+            }
+        }
+    }
+
+    protected void closeDataCollection() {
+        if (COLLECT_DATA) {
+            ReadWriteFile.writeFile(new File("l" + System.currentTimeMillis() + ".log"), fileContent);
+        }
+    }
+
+
 }
