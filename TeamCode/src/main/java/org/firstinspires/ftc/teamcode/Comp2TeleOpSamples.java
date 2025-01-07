@@ -17,7 +17,7 @@ public abstract class Comp2TeleOpSamples extends Comp2TeleOp {
     protected void loopOpMode() {
         waitForStart();
         while (opModeIsActive()) {
-            driveControlls();
+            driveControlls(currentState == State.READY_TO_DROP,true);
             horizontalControls();
             motorVerticalController();
             telemetry.addData("Current State ", getStateName() );

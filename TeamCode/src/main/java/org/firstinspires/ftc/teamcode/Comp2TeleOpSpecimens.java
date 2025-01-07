@@ -20,7 +20,8 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
     protected void loopOpMode() {
         waitForStart();
         while (opModeIsActive()) {
-           driveControlls();
+           driveControlls(motorVerticalSlide.getCurrentPosition()>BOTTOM_VERTICAL_POSITION+100,
+                   currentState != State.VIPER_READY_TO_HANG);
             // moving horizontal slide using the left joystick
             horizontalControls();
             //moving the viper slide up to different positions
@@ -71,11 +72,16 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
                     intakeClaw.setPosition(INTAKE_CLAW_OPEN);
                     currentState = Comp2TeleOpSpecimens.State.CLAW_READY_TO_GRAB;
                 }
+
+
+
                 if(gamepad2.b){
                     intakeWrist.setPosition(WRIST_START_POSITION - 0.3);
                 }
                 if(gamepad2.a){
                     intakeWrist.setPosition(WRIST_START_POSITION);
+                }if (gamepad2.x){
+                    intakeWrist.setPosition(gamepad2.left_stick_y);
                 }
             }
             if (currentState == Comp2TeleOpSpecimens.State.GRAB_AND_RETRACT){

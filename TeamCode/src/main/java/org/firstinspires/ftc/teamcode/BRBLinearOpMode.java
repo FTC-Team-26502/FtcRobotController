@@ -199,7 +199,7 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     }
     protected void motorVerticalController() {
         // moving the viper slide up to different positions
-        if (gamepad2.right_stick_y < 0 && verticalCurrentPosition < TOP_VERTICAL_POSITION) {
+        if (gamepad2.right_stick_y < 0 && verticalCurrentPosition < TOP_VERTICAL_POSITION) { 
             // go up
             verticalCurrentPosition -= gamepad2.right_stick_y * VERTICAL_JOYSTICK_MULTIPLIER;
 
@@ -209,19 +209,41 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         }
         motorVerticalSlide.setTargetPosition(verticalCurrentPosition);
     }
-    protected void driveControlls() {
-        if (gamepad1.left_trigger>0 && gamepad1.right_trigger == 0) {
-            amountOfChange = 0.03;
+    protected void driveControlls(boolean viperUp, boolean backAllowed) {
+        if (gamepad1.left_trigger>0 && gamepad1.right_trigger == 0 || viperUp) {
+            amountOfChange = 0.003;
         } else if (gamepad1.right_trigger>0 && gamepad1.left_trigger == 0 ) {
-            amountOfChange = 0.07;
+            amountOfChange = 0.007;
         } else if (gamepad1.left_trigger > 0 && gamepad1.right_trigger > 0) {
-            amountOfChange = 0.1;
+            amountOfChange = 0.01;
         }else {
-            amountOfChange = 0.05;
+            amountOfChange = 0.005;
         }
         driveSpeed = DRIVE_MOTOR_SPEED + gamepad2.right_trigger - gamepad2.left_trigger;
-        currentMotorSpeedY =  speedIncrease(currentMotorSpeedY, gamepad1.left_stick_y, amountOfChange);
         currentMotorSpeedX = speedIncrease(currentMotorSpeedX, gamepad1.left_stick_x, amountOfChange);
+        if ( !viperUp ) {
+            currentMotorSpeedY = speedIncrease(currentMotorSpeedY, gamepad1.left_stick_y, amountOfChange);
+            telemetry.speak("viper down");
+            telemetry.addData("!!!!!!!!!!!!!!!!!!!!gamepad", gamepad1.left_stick_y);
+        } else {
+            if (backAllowed) {
+                telemetry.addData("!!!!!!!!!!!!!!!!!!!!gamepad", gamepad1.left_stick_y);
+                currentMotorSpeedY = speedIncrease(currentMotorSpeedY, gamepad1.left_stick_y, amountOfChange);
+                telemetry.speak("back allowed");
+                telemetry.addData("back", "allowed");
+            } else {
+                telemetry.addData("!!!!!!!!!!!!!!!!!!!!gamepad", gamepad1.left_stick_y);
+                if (gamepad1.left_stick_y < 0) {
+                    currentMotorSpeedY = speedIncrease(currentMotorSpeedY, gamepad1.left_stick_y, amountOfChange);
+                    telemetry.speak("Going Forward");
+                    telemetry.addData("Going", "forward");
+                } else {
+                    currentMotorSpeedY = 0;
+                    telemetry.speak("No moving");
+                    telemetry.addData("Not", "moving");
+                }
+            }
+        }
         currentMotorSpeedHeading = speedIncrease(currentMotorSpeedHeading, gamepad1.right_stick_x, amountOfChange);
         // move the robot
         driveTrain.setWeightedDrivePower(
@@ -282,21 +304,20 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         telemetry.addData("Turn speed", currentMotorSpeedHeading );
     }
 
-    private double speedIncrease(double MotorSpeed, float gamepad1, double amountOfChange) {
-        if (gamepad1 == 0) {
-            MotorSpeed = 0;
+    private double speedIncrease(double motorSpeed, double gamepad1, double amountOfChange) {
+        double newSpeed = motorSpeed;
+        if (Math.abs( gamepad1) < 0.01) {
+            newSpeed = 0;
         } else {
-            if (MotorSpeed < gamepad1) {
-                MotorSpeed -= amountOfChange;
-
+            if (motorSpeed < gamepad1) {
+                newSpeed = motorSpeed - amountOfChange;
             } else {
-                if (MotorSpeed > gamepad1) {
-                    MotorSpeed += amountOfChange;
+                if (motorSpeed > gamepad1) {
+                    newSpeed = motorSpeed + amountOfChange;
                 }
             }
         }
-
-        return MotorSpeed;
+        return newSpeed;
     }
 
     protected void horizontalControls() {
