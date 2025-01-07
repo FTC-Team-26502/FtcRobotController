@@ -31,7 +31,7 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     protected double currentMotorSpeedY = 0;
     protected double currentMotorSpeedX = 0;
     protected double currentMotorSpeedHeading = 0;
-    protected final double AMOUNT_OF_CHANGE = 0.001;
+    protected double amountOfChange = 0.005;
 
     //////////////////////////////////////////////
     /// Color sensor
@@ -210,10 +210,19 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         motorVerticalSlide.setTargetPosition(verticalCurrentPosition);
     }
     protected void driveControlls() {
+        if (gamepad1.left_trigger>0 && gamepad1.right_trigger == 0) {
+            amountOfChange = 0.03;
+        } else if (gamepad1.right_trigger>0 && gamepad1.left_trigger == 0 ) {
+            amountOfChange = 0.07;
+        } else if (gamepad1.left_trigger > 0 && gamepad1.right_trigger > 0) {
+            amountOfChange = 0.1;
+        }else {
+            amountOfChange = 0.05;
+        }
         driveSpeed = DRIVE_MOTOR_SPEED + gamepad2.right_trigger - gamepad2.left_trigger;
-        currentMotorSpeedY =  speedIncrease(currentMotorSpeedY, gamepad1.left_stick_y, AMOUNT_OF_CHANGE);
-        currentMotorSpeedX = speedIncrease(currentMotorSpeedX, gamepad1.left_stick_x, AMOUNT_OF_CHANGE);
-        currentMotorSpeedHeading = speedIncrease(currentMotorSpeedHeading, gamepad1.right_stick_x, AMOUNT_OF_CHANGE);
+        currentMotorSpeedY =  speedIncrease(currentMotorSpeedY, gamepad1.left_stick_y, amountOfChange);
+        currentMotorSpeedX = speedIncrease(currentMotorSpeedX, gamepad1.left_stick_x, amountOfChange);
+        currentMotorSpeedHeading = speedIncrease(currentMotorSpeedHeading, gamepad1.right_stick_x, amountOfChange);
         // move the robot
         driveTrain.setWeightedDrivePower(
                 new Pose2d(
@@ -274,14 +283,19 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     }
 
     private double speedIncrease(double MotorSpeed, float gamepad1, double amountOfChange) {
-        if (MotorSpeed < gamepad1) {
-            MotorSpeed += amountOfChange;
-
+        if (gamepad1 == 0) {
+            MotorSpeed = 0;
         } else {
-            if (MotorSpeed > gamepad1) {
+            if (MotorSpeed < gamepad1) {
                 MotorSpeed -= amountOfChange;
+
+            } else {
+                if (MotorSpeed > gamepad1) {
+                    MotorSpeed += amountOfChange;
+                }
             }
         }
+
         return MotorSpeed;
     }
 
