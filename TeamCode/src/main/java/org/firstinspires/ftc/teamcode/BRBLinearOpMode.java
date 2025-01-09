@@ -123,8 +123,8 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         intakeWrist.setPosition(WRIST_START_POSITION);
         // Init vertical slide
         motorVerticalSlide = hardwareMap.get(DcMotor.class, "verticalViper");
-        topClaw = hardwareMap.get(Servo.class, "topClaw");
-        topArm = hardwareMap.get(Servo.class, "topArm");
+        topClaw  = hardwareMap.get(Servo.class, "topClaw");
+        topArm   = hardwareMap.get(Servo.class, "topArm");
         topWrist = hardwareMap.get(Servo.class, "topWrist");
         motorVerticalSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorVerticalSlide.setTargetPosition(BOTTOM_VERTICAL_POSITION);
