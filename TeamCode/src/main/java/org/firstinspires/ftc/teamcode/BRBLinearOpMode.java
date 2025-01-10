@@ -73,7 +73,7 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     protected final int BOTTOM_VERTICAL_POSITION = 0;
     protected final int MIDDLE_VERTICAL_POSITION = 1400;
     protected final int VERTICAL_JOYSTICK_MULTIPLIER = 20;
-    protected final double TOP_CLAW_OPEN = 0.5;
+    protected final double TOP_CLAW_OPEN = 1;
     protected final double TOP_CLAW_CLOSE = 0;
     protected final double DROPPING_POSITION = 0.3;
     protected final double UP_POSITION = 0.45;
