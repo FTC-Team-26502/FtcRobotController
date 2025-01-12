@@ -74,7 +74,7 @@ public abstract class Comp2TeleOpSamples extends Comp2TeleOp {
             }
             if (currentState == State.TRANSFER_TO_TOP){
                 if(gamepad2.left_bumper){
-                    viperSlideUp();
+                    motorVerticalSlide.setTargetPosition(TOP_VERTICAL_POSITION);
                     sleep(3000);
                     topArm.setPosition(DROPPING_POSITION);
                     currentState = State.READY_TO_DROP;
@@ -91,7 +91,7 @@ public abstract class Comp2TeleOpSamples extends Comp2TeleOp {
                     sleep(300);
                     topArm.setPosition(INSIDE_ROBOT_CLAW_VERTICAL);
                     sleep(300);
-                    viperSlideDown();
+                    motorVerticalSlide.setTargetPosition(BOTTOM_VERTICAL_POSITION);
                     currentState = State.INITIAL;
                 }
             }

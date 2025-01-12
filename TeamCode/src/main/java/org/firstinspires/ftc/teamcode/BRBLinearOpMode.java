@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.util.ReadWriteFile;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.opencv.ColorRange;
 
 import java.io.File;
 import java.util.Locale;
@@ -71,15 +72,17 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     /// Vertical slide
     protected final int TOP_VERTICAL_POSITION = 3500;
     protected final int BOTTOM_VERTICAL_POSITION = 0;
-    protected final int MIDDLE_VERTICAL_POSITION = 1400;
-    protected final int VERTICAL_JOYSTICK_MULTIPLIER = 20;
-    protected final double TOP_CLAW_OPEN = 1;
+    protected final int MIDDLE_VERTICAL_POSITION = 1000;
+
+    protected int verticalBottom = BOTTOM_VERTICAL_POSITION;
+    protected final int VERTICAL_JOYSTICK_MULTIPLIER = 10;
+    protected final double TOP_CLAW_OPEN = 0.5;
     protected final double TOP_CLAW_CLOSE = 0;
     protected final double DROPPING_POSITION = 0.3;
     protected final double UP_POSITION = 0.45;
     protected final double FRONT_POSITION = 0.17;
     protected final double INSIDE_ROBOT_CLAW_VERTICAL = 0;
-    protected final double WRIST_START_POSITION_TOP = 0.85;
+    protected final double WRIST_START_POSITION_TOP = 0.5;
     protected final double WRIST_HANG_POSITION = 0.15;
     protected Servo topWrist;
     protected DcMotor motorVerticalSlide = null;
@@ -128,14 +131,14 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         topWrist = hardwareMap.get(Servo.class, "topWrist");
         motorVerticalSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorVerticalSlide.setTargetPosition(BOTTOM_VERTICAL_POSITION);
-        motorVerticalSlide.setPower(0.5);
+        motorVerticalSlide.setPower(0.1);
         motorVerticalSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         topArm.setPosition(INSIDE_ROBOT_CLAW_VERTICAL);
         topClaw.setPosition(TOP_CLAW_OPEN);
         topWrist.setPosition(WRIST_START_POSITION_TOP);
         // Init lights
-//        leftLight = hardwareMap.get(Servo.class, "lights left");
-//        rightLight = hardwareMap.get(Servo.class, "lights right");
+        leftLight = hardwareMap.get(Servo.class, "lights left");
+        rightLight = hardwareMap.get(Servo.class, "lights right");
         // Init color sensor
         colorSensor = hardwareMap.get(ColorSensor.class, "color sensor");
         // webcam
@@ -151,41 +154,29 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         telemetry.update();
     }
 
-    /**
-     * Extend the viper slide up
-     */
-    protected void viperSlideUp(){
-        motorVerticalSlide.setTargetPosition(TOP_VERTICAL_POSITION);
-    }
-
-    /**
-     * Move the viper slide to the middle
-     */
-    protected void viperSlideMiddle(){
-        motorVerticalSlide.setTargetPosition(MIDDLE_VERTICAL_POSITION);
-    }
-
-    /**
-     * Retract the viper slide down
-     */
-    protected void viperSlideDown(){
-        motorVerticalSlide.setTargetPosition(BOTTOM_VERTICAL_POSITION);
-    }
 
     protected String detectColor(){
         double red = colorSensor.red();
-        double green = colorSensor.green();
         double blue = colorSensor.blue();
+        double green = colorSensor.green();
         double alpha = colorSensor.alpha();
 
         telemetry.addData("Green", green);
-        if(red>blue && green>red && alpha>blue && red<200){
+        if(colorSensor == ColorRange.YELLOW){
+            leftLight.setPosition(0.35);
+            rightLight.setPosition(0.35);
             return YELLOW_COLOR;
         }else if(red<blue && green<blue && alpha<blue){
+            leftLight.setPosition(0.55);
+            rightLight.setPosition(0.55);
             return BLUE_COLOR;
         }else if(red>blue && green<red && alpha<red){
+            leftLight.setPosition(0.28);
+            rightLight.setPosition(0.28);
             return RED_COLOR;
         }else {
+            leftLight.setPosition(6);
+            rightLight.setPosition(6);
             return NONE_COLOR;
         }
     }
@@ -198,15 +189,10 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         intakeClawPosition = INTAKE_CLAW_OPEN;
     }
     protected void motorVerticalController() {
-        // moving the viper slide up to different positions
-        if (gamepad2.right_stick_y < 0 && verticalCurrentPosition < TOP_VERTICAL_POSITION) { 
-            // go up
-            verticalCurrentPosition -= gamepad2.right_stick_y * VERTICAL_JOYSTICK_MULTIPLIER;
-
-        } else if (gamepad2.right_stick_y > 0 && verticalCurrentPosition > BOTTOM_VERTICAL_POSITION) {
-            // go down
-            verticalCurrentPosition -= gamepad2.right_stick_y * VERTICAL_JOYSTICK_MULTIPLIER;
-        }
+        verticalCurrentPosition -= gamepad2.right_stick_y * VERTICAL_JOYSTICK_MULTIPLIER;
+        verticalCurrentPosition = Math.max(verticalCurrentPosition, verticalBottom);
+        verticalCurrentPosition = Math.min(verticalCurrentPosition, TOP_VERTICAL_POSITION);
+        telemetry.addData("vericalCurrentPosition!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!: ", verticalCurrentPosition);
         motorVerticalSlide.setTargetPosition(verticalCurrentPosition);
     }
     protected void driveControlls(boolean viperUp, boolean backAllowed) {

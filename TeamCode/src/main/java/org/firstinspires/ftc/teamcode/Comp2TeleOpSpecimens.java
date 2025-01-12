@@ -27,6 +27,9 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
             //moving the viper slide up to different positions
             motorVerticalController();
 
+            String whatColor = detectColor();
+            telemetry.addData("What color", whatColor);
+
             // state transitions
             telemetry.addData("Current State ", getStateName() );
             if (currentState == Comp2TeleOpSpecimens.State.INITIAL) {
@@ -49,7 +52,6 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
                     intakeArm.setPosition(ARM_GRAB);
                     sleep(300);
                     // closes the intake claw
-                    String whatColor = detectColor();
                     if ( (whatColor == BLUE_COLOR && !redAlliance)
                             || (whatColor == RED_COLOR && redAlliance)
                     ) {
@@ -72,9 +74,6 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
                     intakeClaw.setPosition(INTAKE_CLAW_OPEN);
                     currentState = Comp2TeleOpSpecimens.State.CLAW_READY_TO_GRAB;
                 }
-
-
-
                 if(gamepad2.b){
                     intakeWrist.setPosition(WRIST_START_POSITION - 0.3);
                 }
@@ -148,6 +147,7 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
                     sleep(500);
 
                     currentState = State.INITIAL;
+                    verticalBottom = BOTTOM_VERTICAL_POSITION;
 
                 }
             }

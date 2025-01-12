@@ -22,8 +22,6 @@ public class encoderLocationFinder extends OpMode {
     @Override
     public void init() {
         sideways = hardwareMap.get(DcMotor.class, "horizontalExtender");
-        sideways.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        sideways.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        sideways.setTargetPosition(0);
 //        sideways.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //        sideways.setPower(0.9);
@@ -37,20 +35,11 @@ public class encoderLocationFinder extends OpMode {
     }
 
     public void loop() {
-//        if (gamepad2.right_bumper){
-//            sideways.setTargetPosition(0);
-//        }else if(gamepad2.left_bumper){
-//            sideways.setTargetPosition(-850);
-//        }
-//        if (gamepad1.a){
-//            up.setTargetPosition(bottom);
-//        } else if (gamepad1.b) {
-//            up.setTargetPosition(top);
-//        }else if (gamepad1.x) {
-//            up.setTargetPosition(middle);
-//        }else if (gamepad1.y) {
-//            up.setTargetPosition(low);
-//        }
+        if (gamepad2.right_bumper){
+            sideways.setPower(0.3);
+        }else if(gamepad2.left_bumper){
+            sideways.setPower(-0.3);
+        }
 
 
         telemetry.addData("Status", "Running");
