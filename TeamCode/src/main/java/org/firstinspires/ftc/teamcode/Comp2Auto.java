@@ -15,12 +15,19 @@ public class Comp2Auto  extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         //Forming the Trajectorys(Paths the robot moves on)
 //        drive.setPoseEstimate();
-        Trajectory forward = drive.trajectoryBuilder(new Pose2d(), Math.toRadians(90))
-                .forward(12)
+        Trajectory driveToBasket = drive.trajectoryBuilder(new Pose2d(), Math.toRadians(90))
+                .splineTo(new Vector2d(-52, -55), Math.toRadians(45))
                 .build();
-//        Trajectory driveToBasket = drive.trajectoryBuilder(new Pose2d())
-//                .splineTo(new Vector2d(52, 56), Math.toRadians(90))
-//                .build();
+        Trajectory driveToHang = drive.trajectoryBuilder(new Pose2d())
+                .splineTo(new Vector2d(-24, -12), Math.toRadians(0))
+                .build();
+
+        Trajectory driveToBlue = drive.trajectoryBuilder(new Pose2d(), Math.toRadians(90))
+                .splineTo(new Vector2d(52, 55), Math.toRadians(225))
+                .splineTo(new Vector2d(48, 12), Math.toRadians(0))
+                .forward(-26)
+                .build();
+
 //        Trajectory turnToSample1 = drive.trajectoryBuilder(new Pose2d())
 //                .splineTo(new Vector2d(52, 56), Math.toRadians(0))
 //                .build();
@@ -39,25 +46,5 @@ public class Comp2Auto  extends LinearOpMode {
         waitForStart();
 
         if(isStopRequested()) return;
-        //drive forward to avoid the wall
-        drive.followTrajectory(forward);
-        //drive to basket
-//        drive.followTrajectory(driveToBasket);
-        //drop preloaded sample
-//        drive.followTrajectory(turnToSample1);
-        //extend the slide and grab sample
-        //sample transfer
-//        drive.followTrajectory(turnToBacket);
-//        //drop sample
-//        drive.followTrajectory(turnToSample2);
-//        //extend the slide and grab sample
-//        //sample transfer
-//        drive.followTrajectory(turnToBacket);
-//        //drop sample
-//        drive.followTrajectory(turnToSample3);
-//        //extend the slide and grab sample
-//        //sample transfer
-//        drive.followTrajectory(park);
-        // raise arm and claw to touch bar
     }
 }

@@ -9,6 +9,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class encoderLocationFinder extends OpMode {
     protected DcMotor sideways;
     protected DcMotor up;
+    protected DcMotor leftEncoder;
+    protected DcMotor rightEncoder;
+    protected DcMotor sidewaysEncoder;
 
     int end = -300;
     int start = 300;
@@ -22,6 +25,10 @@ public class encoderLocationFinder extends OpMode {
     @Override
     public void init() {
         sideways = hardwareMap.get(DcMotor.class, "horizontalExtender");
+        leftEncoder = hardwareMap.get(DcMotor.class, "leftFront");
+        rightEncoder = hardwareMap.get(DcMotor.class, "rightFront");
+        sidewaysEncoder = hardwareMap.get(DcMotor.class, "leftBack");
+        up = hardwareMap.get(DcMotor.class, "verticalViper");
 //        sideways.setTargetPosition(0);
 //        sideways.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //        sideways.setPower(0.9);
@@ -35,17 +42,12 @@ public class encoderLocationFinder extends OpMode {
     }
 
     public void loop() {
-        if (gamepad2.right_bumper){
-            sideways.setPower(0.3);
-        }else if(gamepad2.left_bumper){
-            sideways.setPower(-0.3);
-        }
-
-
         telemetry.addData("Status", "Running");
-        telemetry.addData("position", sideways.getCurrentPosition());
-        telemetry.addData("gamepad", gamepad1.left_stick_x);
-        telemetry.addData("Target Pose", sideways.getTargetPosition() );
+        telemetry.addData("Horizontal Position", sideways.getCurrentPosition());
+        telemetry.addData("Encoder Right", rightEncoder.getCurrentPosition());
+        telemetry.addData("Encoder Left", leftEncoder.getCurrentPosition());
+        telemetry.addData("Encoder Sideways", sidewaysEncoder.getCurrentPosition());
+        telemetry.addData("Vertical Position", up.getCurrentPosition());
         telemetry.update();
     }
 }
