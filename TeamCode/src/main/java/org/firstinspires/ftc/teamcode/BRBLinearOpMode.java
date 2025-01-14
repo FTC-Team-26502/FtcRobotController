@@ -56,7 +56,7 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     protected final double WRIST_START_POSITION = 0.8;
     protected final double ARM_READY_TO_GRAB = 0.5;
     protected final double ARM_GRAB = 0.7;
-    protected final int HORIZONTAL_SLIDE_OUT_LIMIT = -850;
+    protected final int HORIZONTAL_SLIDE_OUT_LIMIT = -900;
     protected final int HORIZONTAL_SLIDE_IN_LIMIT = 0;
     protected final int HORIZONTAL_JOYSTICK_MULTIPLIER = 20;
     protected final double SPECIMEN_GRAB = 1;
@@ -120,6 +120,7 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         motorHorizontalSlide.setTargetPosition(HORIZONTAL_SLIDE_IN_LIMIT);
         motorHorizontalSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorHorizontalSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         motorHorizontalSlide.setPower(0.5);
         intakeArm.setDirection(Servo.Direction.FORWARD);
         intakeArm.setPosition(INSIDE_ROBOT_CLAW_HORIZONTAL);
@@ -159,18 +160,20 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         double red = colorSensor.red();
         double blue = colorSensor.blue();
         double green = colorSensor.green();
-        double alpha = colorSensor.alpha();
+        double G3 = (red+green)/(red+green+blue);
+        double I3 = blue/(red+green+blue);
+        double J3 = red/(red+green+blue);
 
         telemetry.addData("Green", green);
-        if(colorSensor == ColorRange.YELLOW){
+        if(G3>I3 && G3>J3){
             leftLight.setPosition(0.35);
             rightLight.setPosition(0.35);
             return YELLOW_COLOR;
-        }else if(red<blue && green<blue && alpha<blue){
+        }else if(I3>J3 && I3>G3){
             leftLight.setPosition(0.55);
             rightLight.setPosition(0.55);
             return BLUE_COLOR;
-        }else if(red>blue && green<red && alpha<red){
+        }else if(J3>I3 && J3>G3){
             leftLight.setPosition(0.28);
             rightLight.setPosition(0.28);
             return RED_COLOR;
@@ -309,9 +312,11 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     protected void horizontalControls() {
         if (gamepad2.left_stick_x > 0 && horizontalSlideLocation > HORIZONTAL_SLIDE_OUT_LIMIT) {
             horizontalSlideLocation -= gamepad2.left_stick_x * HORIZONTAL_JOYSTICK_MULTIPLIER;
+            telemetry.addData("Going ", "out");
 //            readyForTransfer = false;
         } else if (gamepad2.left_stick_x < 0 && horizontalSlideLocation < HORIZONTAL_SLIDE_IN_LIMIT) {
             horizontalSlideLocation -= gamepad2.left_stick_x * HORIZONTAL_JOYSTICK_MULTIPLIER;
+            telemetry.addData("Going ", "in");
 //            readyForTransfer = false;
         }
         motorHorizontalSlide.setTargetPosition(horizontalSlideLocation);

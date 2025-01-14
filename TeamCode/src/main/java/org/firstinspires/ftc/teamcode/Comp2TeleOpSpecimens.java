@@ -135,6 +135,7 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
                     currentState = Comp2TeleOpSpecimens.State.CLAW_READY_TO_GRAB;
                     topArm.setPosition(INSIDE_ROBOT_CLAW_VERTICAL);
                     topClaw.setPosition(TOP_CLAW_OPEN);
+                    verticalBottom = BOTTOM_VERTICAL_POSITION;
                 }
             }
             if (currentState == State.VIPER_READY_TO_HANG){
@@ -145,7 +146,6 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
                     sleep(300);
                     topArm.setPosition(INSIDE_ROBOT_CLAW_VERTICAL);
                     sleep(500);
-
                     currentState = State.INITIAL;
                     verticalBottom = BOTTOM_VERTICAL_POSITION;
 

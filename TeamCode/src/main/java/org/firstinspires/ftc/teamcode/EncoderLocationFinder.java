@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 
 @TeleOp
-public class encoderLocationFinder extends OpMode {
+public class EncoderLocationFinder extends OpMode {
     protected DcMotor sideways;
     protected DcMotor up;
     protected DcMotor leftEncoder;
