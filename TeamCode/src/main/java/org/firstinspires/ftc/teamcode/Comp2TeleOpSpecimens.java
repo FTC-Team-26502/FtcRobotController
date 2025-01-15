@@ -38,6 +38,7 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
                     intakeArm.setPosition(ARM_READY_TO_GRAB);
                     intakeClaw.setPosition(INTAKE_CLAW_OPEN);
                     currentState = Comp2TeleOpSpecimens.State.CLAW_READY_TO_GRAB;
+                    topWrist.setPosition(WRIST_START_POSITION_TOP);
                 }
 //                if(gamepad2.left_bumper){
 //                    topArm.setPosition(SPECIMEN_GRAB);
@@ -63,6 +64,8 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
                     // position intake claw inside robot
                     intakeArm.setPosition(INSIDE_ROBOT_CLAW_HORIZONTAL);
                     sleep(700);
+                    topArm.setPosition(FRONT_POSITION);
+                    sleep(2000);
                     // takes the whole arm in
                     horizontalSlideLocation = HORIZONTAL_SLIDE_IN_LIMIT;
 //                    readyForTransfer = true;
@@ -85,6 +88,8 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
             }
             if (currentState == Comp2TeleOpSpecimens.State.GRAB_AND_RETRACT){
                 if(!motorHorizontalSlide.isBusy() && gamepad2.y) {
+                    topArm.setPosition(INSIDE_ROBOT_CLAW_VERTICAL);
+                    sleep(700);
                     topClaw.setPosition(TOP_CLAW_CLOSE);
                     sleep(700);
                     intakeClaw.setPosition(INTAKE_CLAW_OPEN);
@@ -97,7 +102,7 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
                     intakeArm.setPosition(ARM_READY_TO_GRAB);
                     intakeClaw.setPosition(INTAKE_CLAW_OPEN);
                     currentState = Comp2TeleOpSpecimens.State.CLAW_READY_TO_GRAB;
-                    topArm.setPosition(INSIDE_ROBOT_CLAW_VERTICAL);
+                    topArm.setPosition(FRONT_POSITION);
                     topClaw.setPosition(TOP_CLAW_OPEN);
                 }
             }
@@ -127,6 +132,7 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
                     topWrist.setPosition(WRIST_HANG_POSITION);
                     sleep(300);
                     currentState = State.VIPER_READY_TO_HANG;
+                    verticalBottom = MIDDLE_VERTICAL_POSITION;
                 }
                 if(gamepad2.left_trigger>0){ // no transfer, reset positions
                     //        readyForTransfer = false;
@@ -149,6 +155,12 @@ public abstract class Comp2TeleOpSpecimens extends Comp2TeleOp{
                     currentState = State.INITIAL;
                     verticalBottom = BOTTOM_VERTICAL_POSITION;
 
+                }
+                if(gamepad2.left_bumper){
+                    topArm.setPosition(SPECIMEN_GRAB);
+                    sleep(700);
+                    topClaw.setPosition(TOP_CLAW_OPEN);
+                    currentState = Comp2TeleOpSpecimens.State.DROP_SAMPLE;
                 }
             }
             telemetry.addData("Next state", getStateName());

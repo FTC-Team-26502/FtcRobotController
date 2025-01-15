@@ -54,7 +54,7 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     protected final double INTAKE_CLAW_CLOSED = 0.8;
     protected final double INSIDE_ROBOT_CLAW_HORIZONTAL = 0.05;
     protected final double WRIST_START_POSITION = 0.8;
-    protected final double ARM_READY_TO_GRAB = 0.5;
+    protected final double ARM_READY_TO_GRAB = 0.55;
     protected final double ARM_GRAB = 0.7;
     protected final int HORIZONTAL_SLIDE_OUT_LIMIT = -900;
     protected final int HORIZONTAL_SLIDE_IN_LIMIT = 0;
@@ -74,16 +74,18 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     protected final int BOTTOM_VERTICAL_POSITION = 0;
     protected final int MIDDLE_VERTICAL_POSITION = 1000;
 
+    protected String whatColor;
+
     protected int verticalBottom = BOTTOM_VERTICAL_POSITION;
     protected final int VERTICAL_JOYSTICK_MULTIPLIER = 10;
-    protected final double TOP_CLAW_OPEN = 0.5;
+    protected final double TOP_CLAW_OPEN = 1;
     protected final double TOP_CLAW_CLOSE = 0;
     protected final double DROPPING_POSITION = 0.3;
     protected final double UP_POSITION = 0.45;
-    protected final double FRONT_POSITION = 0.17;
+    protected final double FRONT_POSITION = 0.18;
     protected final double INSIDE_ROBOT_CLAW_VERTICAL = 0;
-    protected final double WRIST_START_POSITION_TOP = 0.5;
-    protected final double WRIST_HANG_POSITION = 0.15;
+    protected final double WRIST_START_POSITION_TOP = 0.325;
+    protected final double WRIST_HANG_POSITION = 1;
     protected Servo topWrist;
     protected DcMotor motorVerticalSlide = null;
     protected Servo topClaw = null;
@@ -157,31 +159,31 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
 
 
     protected String detectColor(){
+        final double YELLOW = 0.388;
+        final double BLUE = 0.611;
+        final double RED = 0.279;
+        final double SAGE = 0.48;
         double red = colorSensor.red();
         double blue = colorSensor.blue();
         double green = colorSensor.green();
-        double G3 = (red+green)/(red+green+blue);
-        double I3 = blue/(red+green+blue);
-        double J3 = red/(red+green+blue);
-
-        telemetry.addData("Green", green);
-        if(G3>I3 && G3>J3){
-            leftLight.setPosition(0.35);
-            rightLight.setPosition(0.35);
-            return YELLOW_COLOR;
-        }else if(I3>J3 && I3>G3){
-            leftLight.setPosition(0.55);
-            rightLight.setPosition(0.55);
-            return BLUE_COLOR;
-        }else if(J3>I3 && J3>G3){
-            leftLight.setPosition(0.28);
-            rightLight.setPosition(0.28);
-            return RED_COLOR;
-        }else {
-            leftLight.setPosition(6);
-            rightLight.setPosition(6);
-            return NONE_COLOR;
+        if (blue > green && blue > 2*red) {
+            leftLight.setPosition(BLUE);
+            rightLight.setPosition(BLUE);
+            whatColor = BLUE_COLOR;
+        } else if (red > 1.3*blue && red > green){
+            leftLight.setPosition(RED);
+            rightLight.setPosition(RED);
+            whatColor = RED_COLOR;
+        } else if (red>1.3*blue && green>1.3*blue) {
+            leftLight.setPosition(YELLOW);
+            rightLight.setPosition(YELLOW);
+            whatColor = YELLOW_COLOR;
+        } else{
+            leftLight.setPosition(SAGE);
+            rightLight.setPosition(SAGE);
+            whatColor = NONE_COLOR;
         }
+        return whatColor;
     }
     protected void closeIntakeClaw() {
         intakeClaw.setPosition(INTAKE_CLAW_CLOSED);
@@ -212,23 +214,19 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         currentMotorSpeedX = speedIncrease(currentMotorSpeedX, gamepad1.left_stick_x, amountOfChange);
         if ( !viperUp ) {
             currentMotorSpeedY = speedIncrease(currentMotorSpeedY, gamepad1.left_stick_y, amountOfChange);
-            telemetry.speak("viper down");
             telemetry.addData("!!!!!!!!!!!!!!!!!!!!gamepad", gamepad1.left_stick_y);
         } else {
             if (backAllowed) {
                 telemetry.addData("!!!!!!!!!!!!!!!!!!!!gamepad", gamepad1.left_stick_y);
                 currentMotorSpeedY = speedIncrease(currentMotorSpeedY, gamepad1.left_stick_y, amountOfChange);
-                telemetry.speak("back allowed");
                 telemetry.addData("back", "allowed");
             } else {
                 telemetry.addData("!!!!!!!!!!!!!!!!!!!!gamepad", gamepad1.left_stick_y);
                 if (gamepad1.left_stick_y < 0) {
                     currentMotorSpeedY = speedIncrease(currentMotorSpeedY, gamepad1.left_stick_y, amountOfChange);
-                    telemetry.speak("Going Forward");
                     telemetry.addData("Going", "forward");
                 } else {
                     currentMotorSpeedY = 0;
-                    telemetry.speak("No moving");
                     telemetry.addData("Not", "moving");
                 }
             }

@@ -24,14 +24,17 @@ public class ColorSensorTest extends OpMode{
         final double YELLOW = 0.388;
         final double BLUE = 0.611;
         final double RED = 0.279;
-        final double SAGE = 0.7;
-        if (whatColor.red() > whatColor.blue() && whatColor.red() > whatColor.green()) {
-            leftLight.setPosition(RED);
-            rightLight.setPosition(RED);
-        } else if (whatColor.blue() > whatColor.green() && whatColor.blue() > whatColor.red()) {
+        final double SAGE = 0.48;
+        double red = whatColor.red();
+        double blue = whatColor.blue();
+        double green = whatColor.green();
+        if (blue > green && blue > 2*red) {
             leftLight.setPosition(BLUE);
             rightLight.setPosition(BLUE);
-        } else if (whatColor.blue() < whatColor.green() && whatColor.blue() < whatColor.red() && whatColor.green()>whatColor.red()) {
+        } else if (red > 1.3*blue && red > green){
+            leftLight.setPosition(RED);
+            rightLight.setPosition(RED);
+        } else if (red>1.3*blue && green>1.3*blue) {
             leftLight.setPosition(YELLOW);
             rightLight.setPosition(YELLOW);
             telemetry.addData("YELLOW", "IS HERE");
@@ -39,6 +42,9 @@ public class ColorSensorTest extends OpMode{
             leftLight.setPosition(SAGE);
             rightLight.setPosition(SAGE);
         }
+        telemetry.addData("bLue", whatColor.blue());
+        telemetry.addData("green", whatColor.green());
+        telemetry.addData("red", whatColor.red());
         telemetry.update();
 
 
