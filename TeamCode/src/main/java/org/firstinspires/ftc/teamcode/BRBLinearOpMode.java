@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import android.util.Size;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,11 +13,11 @@ import com.qualcomm.robotcore.util.ReadWriteFile;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.opencv.ColorRange;
 
 import java.io.File;
 import java.util.Locale;
 
+@Disabled
 public abstract class BRBLinearOpMode extends LinearOpMode {
     public static final String YELLOW_COLOR = "yellow";
     public static final String BLUE_COLOR = "blue";
@@ -53,9 +54,9 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     protected final double INTAKE_CLAW_OPEN = 1;
     protected final double INTAKE_CLAW_CLOSED = 0.8;
     protected final double INSIDE_ROBOT_CLAW_HORIZONTAL = 0.05;
-    protected final double WRIST_START_POSITION = 0.8;
+    protected final double WRIST_START_POSITION = 0.5;
     protected final double ARM_READY_TO_GRAB = 0.55;
-    protected final double ARM_GRAB = 0.7;
+    protected final double ARM_GRAB = 0.65;
     protected final int HORIZONTAL_SLIDE_OUT_LIMIT = -900;
     protected final int HORIZONTAL_SLIDE_IN_LIMIT = 0;
     protected final int HORIZONTAL_JOYSTICK_MULTIPLIER = 20;
@@ -66,11 +67,11 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     protected Servo intakeClaw = null;
     protected Servo intakeArm = null;
     protected Servo intakeWrist = null;
-    protected double intakeClawPosition = INTAKE_CLAW_OPEN;
+    //protected double intakeClawPosition = INTAKE_CLAW_OPEN;
 
     /////////////////////////////////////////////
     /// Vertical slide
-    protected final int TOP_VERTICAL_POSITION = 3500;
+    protected final int TOP_VERTICAL_POSITION = 3200;
     protected final int BOTTOM_VERTICAL_POSITION = 0;
     protected final int MIDDLE_VERTICAL_POSITION = 1000;
 
@@ -80,12 +81,12 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     protected final int VERTICAL_JOYSTICK_MULTIPLIER = 10;
     protected final double TOP_CLAW_OPEN = 1;
     protected final double TOP_CLAW_CLOSE = 0;
-    protected final double DROPPING_POSITION = 0.3;
+    protected final double DROPPING_POSITION = 0.25;
     protected final double UP_POSITION = 0.45;
     protected final double FRONT_POSITION = 0.18;
     protected final double INSIDE_ROBOT_CLAW_VERTICAL = 0;
     protected final double WRIST_START_POSITION_TOP = 0.325;
-    protected final double WRIST_HANG_POSITION = 1;
+    protected final double WRIST_HANG_POSITION = 0.95;
     protected Servo topWrist;
     protected DcMotor motorVerticalSlide = null;
     protected Servo topClaw = null;
@@ -187,11 +188,11 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     }
     protected void closeIntakeClaw() {
         intakeClaw.setPosition(INTAKE_CLAW_CLOSED);
-        intakeClawPosition = INTAKE_CLAW_CLOSED;
+//        intakeClawPosition = INTAKE_CLAW_CLOSED;
     }
     protected void openIntakeClaw() {
         intakeClaw.setPosition(INTAKE_CLAW_OPEN);
-        intakeClawPosition = INTAKE_CLAW_OPEN;
+//        intakeClawPosition = INTAKE_CLAW_OPEN;
     }
     protected void motorVerticalController() {
         verticalCurrentPosition -= gamepad2.right_stick_y * VERTICAL_JOYSTICK_MULTIPLIER;
@@ -200,7 +201,7 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         telemetry.addData("vericalCurrentPosition!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!: ", verticalCurrentPosition);
         motorVerticalSlide.setTargetPosition(verticalCurrentPosition);
     }
-    protected void driveControlls(boolean viperUp, boolean backAllowed) {
+    protected void driveControls(boolean viperUp, boolean backAllowed) {
         if (gamepad1.left_trigger>0 && gamepad1.right_trigger == 0 || viperUp) {
             amountOfChange = 0.003;
         } else if (gamepad1.right_trigger>0 && gamepad1.left_trigger == 0 ) {
@@ -242,10 +243,21 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
                         currentMotorSpeedHeading
                 )
         );
-        if(gamepad1.dpad_left){
+        if(gamepad1.dpad_up){
             driveTrain.setWeightedDrivePower(
                     new Pose2d(
-                            -driveSpeed,
+                            -driveSpeed/10,
+
+                            0,
+
+                            0
+                    )
+            );
+        }
+        if(gamepad1.dpad_down){
+            driveTrain.setWeightedDrivePower(
+                    new Pose2d(
+                            driveSpeed/10,
 
                             0,
 
@@ -256,31 +268,20 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         if(gamepad1.dpad_right){
             driveTrain.setWeightedDrivePower(
                     new Pose2d(
-                            driveSpeed,
-
                             0,
+
+                            -driveSpeed/10,
 
                             0
                     )
             );
         }
-        if(gamepad1.dpad_up){
+        if(gamepad1.dpad_left){
             driveTrain.setWeightedDrivePower(
                     new Pose2d(
                             0,
 
-                            -driveSpeed,
-
-                            0
-                    )
-            );
-        }
-        if(gamepad1.dpad_down){
-            driveTrain.setWeightedDrivePower(
-                    new Pose2d(
-                            0,
-
-                            driveSpeed,
+                            driveSpeed/10,
 
                             0
                     )
@@ -297,11 +298,11 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
             newSpeed = 0;
         } else {
             if (motorSpeed < gamepad1) {
-                newSpeed = motorSpeed - amountOfChange;
+                // backwards
+                newSpeed = Math.max(motorSpeed - amountOfChange, gamepad1);
             } else {
-                if (motorSpeed > gamepad1) {
-                    newSpeed = motorSpeed + amountOfChange;
-                }
+                //forwards
+                newSpeed = Math.min(motorSpeed + amountOfChange, gamepad1);
             }
         }
         return newSpeed;
@@ -319,6 +320,7 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         }
         motorHorizontalSlide.setTargetPosition(horizontalSlideLocation);
     }
+
     protected void dumpState() {
         telemetry.addData("Motor position", motorHorizontalSlide.getCurrentPosition());
         telemetry.addData("Servo claw", intakeClaw.getPosition());
@@ -353,5 +355,50 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     }
 
 
+    protected void getReadyToGrab() {
+        intakeArm.setPosition(ARM_READY_TO_GRAB);
+        intakeClaw.setPosition(INTAKE_CLAW_OPEN);
+        topWrist.setPosition(WRIST_START_POSITION_TOP);
+    }
 
+    protected void grab() {
+        String whatColor = detectColor();
+        // both samples and specimens
+        // positions intake arm ready to grab
+        intakeArm.setPosition(ARM_GRAB);
+        // closes the intake claw
+        if ( (whatColor == BLUE_COLOR && !redAlliance)
+                || (whatColor == RED_COLOR && redAlliance)
+        ) {
+            closeIntakeClaw();
+        } else {
+            openIntakeClaw();
+        }
+        sleep(300);
+        leftLight.setPosition(1);
+        leftLight.setPosition(0);
+        intakeWrist.setPosition(WRIST_START_POSITION);
+        // position intake claw inside robot
+        intakeArm.setPosition(INSIDE_ROBOT_CLAW_HORIZONTAL);
+        topArm.setPosition(FRONT_POSITION);
+        // takes the whole arm in
+        horizontalSlideLocation = HORIZONTAL_SLIDE_IN_LIMIT;
+    }
+
+    protected void transfer() {
+        topArm.setPosition(INSIDE_ROBOT_CLAW_VERTICAL);
+        sleep(700);
+        topClaw.setPosition(TOP_CLAW_CLOSE);
+        sleep(700);
+        intakeClaw.setPosition(INTAKE_CLAW_OPEN);
+        sleep(500);
+        topArm.setPosition(DROPPING_POSITION);
+    }
+
+    protected void resetTransfer() {
+        intakeArm.setPosition(ARM_READY_TO_GRAB);
+        intakeClaw.setPosition(INTAKE_CLAW_OPEN);
+        topArm.setPosition(FRONT_POSITION);
+        topClaw.setPosition(TOP_CLAW_OPEN);
+    }
 }

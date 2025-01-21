@@ -1,8 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-public abstract class Comp2TeleOpSamples extends Comp2TeleOp {
+@Disabled
+public abstract class Comp2TeleOpSamples extends Comp2Samples {
 
     protected enum State {
         INITIAL,
@@ -17,66 +18,42 @@ public abstract class Comp2TeleOpSamples extends Comp2TeleOp {
     protected void loopOpMode() {
         waitForStart();
         while (opModeIsActive()) {
-            driveControlls(currentState == State.READY_TO_DROP,true);
+            driveControls(currentState == State.READY_TO_DROP,true);
             horizontalControls();
             motorVerticalController();
             telemetry.addData("Current State ", getStateName() );
             // state transitions
             if (currentState == State.INITIAL) {
                 if(gamepad2.left_trigger>0){
-                    intakeArm.setPosition(ARM_READY_TO_GRAB);
-                    intakeClaw.setPosition(INTAKE_CLAW_OPEN);
+                    getReadyToGrab();
                     currentState = State.CLAW_READY_TO_GRAB;
                 }
-            }
-            if (currentState == State.CLAW_READY_TO_GRAB) {
+            } else if (currentState == State.CLAW_READY_TO_GRAB) {
                 if(gamepad2.right_trigger>0){
-                    // both samples and specimens
-                    // positions intake arm ready to grab
-                    intakeArm.setPosition(ARM_GRAB);
-                    sleep(300);
-                    // closes the intake claw
-                    String whatColor = detectColor();
-                    if ( whatColor == YELLOW_COLOR
-                            || (whatColor == BLUE_COLOR && !redAlliance)
-                            || (whatColor == RED_COLOR && redAlliance)
-                    ) {
-                        closeIntakeClaw();
-                    } else {
-                        openIntakeClaw();
-                    }
-                    // position intake claw inside robot
-                    intakeArm.setPosition(INSIDE_ROBOT_CLAW_HORIZONTAL);
-                    sleep(700);
-                    // takes the whole arm in
-                    horizontalSlideLocation = HORIZONTAL_SLIDE_IN_LIMIT;
+                    grab();
                     currentState = State.GRAB_AND_RETRACT;
-                    saveFrame();
                 }
-            }
-            if (currentState == State.GRAB_AND_RETRACT){
+                if (gamepad2.b) {
+                    intakeWrist.setPosition(WRIST_START_POSITION - 0.3);
+                }
+                if (gamepad2.a) {
+                    intakeWrist.setPosition(WRIST_START_POSITION);
+                }
+                if (gamepad2.x) {
+                    intakeWrist.setPosition(gamepad2.left_stick_y);
+                }
+            } else if (currentState == State.GRAB_AND_RETRACT){
                 if(!motorHorizontalSlide.isBusy() && gamepad2.y) {
-                    // only samples
-//                    readyForTransfer = false;
-                    topClaw.setPosition(TOP_CLAW_CLOSE);
-                    sleep(700);
-                    intakeClaw.setPosition(INTAKE_CLAW_OPEN);
-                    sleep(500);
-                    topArm.setPosition(UP_POSITION);
-
+                    transfer();
                     currentState = State.TRANSFER_TO_TOP;
                 }
-                if(gamepad2.left_trigger>0){
-                    intakeArm.setPosition(ARM_READY_TO_GRAB);
-                    intakeClaw.setPosition(INTAKE_CLAW_OPEN);
+                if(gamepad2.left_trigger>0) {
+                    resetTransfer();
                     currentState = State.CLAW_READY_TO_GRAB;
                 }
-            }
-            if (currentState == State.TRANSFER_TO_TOP){
+            } else if (currentState == State.TRANSFER_TO_TOP){
                 if(gamepad2.left_bumper){
-                    motorVerticalSlide.setTargetPosition(TOP_VERTICAL_POSITION);
-                    sleep(3000);
-                    topArm.setPosition(DROPPING_POSITION);
+                    readyToDropSamples();
                     currentState = State.READY_TO_DROP;
                 }
                 if(gamepad2.left_trigger>0){
@@ -84,14 +61,9 @@ public abstract class Comp2TeleOpSamples extends Comp2TeleOp {
                     intakeClaw.setPosition(INTAKE_CLAW_OPEN);
                     currentState = State.CLAW_READY_TO_GRAB;
                 }
-            }
-            if (currentState == State.READY_TO_DROP){
+            } else if (currentState == State.READY_TO_DROP){
                 if(gamepad2.right_bumper){
-                    topClaw.setPosition(TOP_CLAW_OPEN);
-                    sleep(300);
-                    topArm.setPosition(INSIDE_ROBOT_CLAW_VERTICAL);
-                    sleep(300);
-                    motorVerticalSlide.setTargetPosition(BOTTOM_VERTICAL_POSITION);
+                    dropAndReturn();
                     currentState = State.INITIAL;
                 }
             }
@@ -101,8 +73,6 @@ public abstract class Comp2TeleOpSamples extends Comp2TeleOp {
         }
         closeDataCollection();
     }
-
-
 
 
     protected String getStateName() {

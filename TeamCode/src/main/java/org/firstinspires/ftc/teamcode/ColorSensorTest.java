@@ -1,26 +1,31 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-
+@Disabled
 @TeleOp
 public class ColorSensorTest extends OpMode{
     protected Servo rightLight;
     protected Servo leftLight;
     protected ColorSensor whatColor;
+
+    protected DcMotor rightBack;
     @Override
     public void init() {
         leftLight = hardwareMap.get(Servo.class, "lights left");
         rightLight = hardwareMap.get(Servo.class, "lights right");
         whatColor = hardwareMap.get(ColorSensor.class, "color sensor");
+        rightBack = hardwareMap.get(DcMotor.class, "rightBack");
     }
 
     @Override
     public void loop() {
-
+        rightBack.setPower(0.3);
         final double YELLOW = 0.388;
         final double BLUE = 0.611;
         final double RED = 0.279;

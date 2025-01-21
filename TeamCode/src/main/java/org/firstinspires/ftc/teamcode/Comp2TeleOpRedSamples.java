@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "Red Samples")
+@TeleOp(name = "TeleOp Red Samples")
 public class Comp2TeleOpRedSamples extends Comp2TeleOpSamples {
 
     @Override

@@ -1,4 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
-public class DriveTesting {
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+@TeleOp
+public class DriveTesting extends BRBLinearOpMode{
+    @Override
+    public void runOpMode() throws InterruptedException {
+        driveControls(false, true);
+    }
 }
