@@ -27,7 +27,7 @@ public class EncoderLocationFinder extends OpMode {
         sideways = hardwareMap.get(DcMotor.class, "horizontalExtender");
         leftEncoder = hardwareMap.get(DcMotor.class, "leftFront");
         rightEncoder = hardwareMap.get(DcMotor.class, "rightFront");
-        sidewaysEncoder = hardwareMap.get(DcMotor.class, "leftBack");
+        sidewaysEncoder = hardwareMap.get(DcMotor.class, "backLeft");
         up = hardwareMap.get(DcMotor.class, "verticalViper");
 //        sideways.setTargetPosition(0);
 //        sideways.setMode(DcMotor.RunMode.RUN_TO_POSITION);
