@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+@Autonomous
 public class Comp2AutoRedSpecimens extends  Comp2AutoSpecimens {
     public void runOpMode() {
         initOpMode(true);
