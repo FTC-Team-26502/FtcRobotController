@@ -16,6 +16,9 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import java.io.File;
 import java.util.Locale;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+
 @Disabled
 public abstract class BRBLinearOpMode extends LinearOpMode {
     public static final String YELLOW_COLOR = "yellow";
@@ -401,5 +404,28 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         intakeClaw.setPosition(INTAKE_CLAW_OPEN);
         topArm.setPosition(FRONT_POSITION);
         topClaw.setPosition(TOP_CLAW_OPEN);
+    }
+
+    protected  Vector2d getVector2d( double x, double y) {
+        if (redAlliance) {
+            return new Vector2d(x,y);
+        }
+        return new Vector2d(-x,-y);
+    }
+
+    protected double getHeading( double heading ) {
+        if (redAlliance) {
+            return heading;
+        } else {
+            return -heading;
+        }
+    }
+
+    protected Pose2d getPose2d(double x, double y, double heading) {
+        if ( redAlliance ) {
+            return new Pose2d(x,y,heading);
+        } else {
+            return new Pose2d(-x,-y,-heading);
+        }
     }
 }
