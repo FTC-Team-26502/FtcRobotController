@@ -21,13 +21,14 @@ public abstract class Comp2TeleOpSpecimens extends Comp2Specimens {
     protected void loopOpMode() {
         waitForStart();
         while (opModeIsActive()) {
+            detectColor();
            driveControls(motorVerticalSlide.getCurrentPosition()>BOTTOM_VERTICAL_POSITION+100,
                    currentState != State.VIPER_READY_TO_HANG);
             // moving horizontal slide using the left joystick
             horizontalControls();
             //moving the viper slide up to different positions
             motorVerticalController();
-            telemetry.addData("What color", whatColor);
+//            telemetry.addData("What color", whatColor);
 
             // state transitions
             telemetry.addData("Current State ", getStateName() );
@@ -42,15 +43,7 @@ public abstract class Comp2TeleOpSpecimens extends Comp2Specimens {
                     grab();
                     currentState = Comp2TeleOpSpecimens.State.GRAB_AND_RETRACT;
                 } else {
-                    if (gamepad2.b) {
-                        intakeWrist.setPosition(WRIST_START_POSITION - 0.3);
-                    }
-                    if (gamepad2.a) {
-                        intakeWrist.setPosition(WRIST_START_POSITION);
-                    }
-                    if (gamepad2.x) {
-                        intakeWrist.setPosition(gamepad2.left_stick_y);
-                    }
+                    wristControl();
                 }
             } else if (currentState == Comp2TeleOpSpecimens.State.GRAB_AND_RETRACT){
                 if(!motorHorizontalSlide.isBusy() && gamepad2.y) {

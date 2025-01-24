@@ -18,6 +18,7 @@ public abstract class Comp2TeleOpSamples extends Comp2Samples {
     protected void loopOpMode() {
         waitForStart();
         while (opModeIsActive()) {
+            detectColor();
             driveControls(currentState == State.READY_TO_DROP,true);
             horizontalControls();
             motorVerticalController();

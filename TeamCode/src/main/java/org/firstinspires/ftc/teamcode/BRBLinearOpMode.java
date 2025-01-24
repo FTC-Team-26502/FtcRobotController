@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ReadWriteFile;
-
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -27,7 +26,7 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
 
     //////////////////////////////////////////////
     /// Drive Train motors.
-    protected final double DRIVE_MOTOR_SPEED = 0.5;
+    protected final double DRIVE_MOTOR_SPEED = 0.3;
     protected SampleMecanumDrive driveTrain = null;
     protected double driveSpeed = DRIVE_MOTOR_SPEED;
     protected double currentMotorSpeedY = 0;
@@ -52,7 +51,7 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     /////////////////////////////////////////////
     /// Horizontal slide
     protected final double INTAKE_CLAW_OPEN = 1;
-    protected final double INTAKE_CLAW_CLOSED = 0.8;
+    protected final double INTAKE_CLAW_CLOSED = 0;
     protected final double INSIDE_ROBOT_CLAW_HORIZONTAL = 0.05;
     protected final double WRIST_START_POSITION = 0.5;
     protected final double ARM_READY_TO_GRAB = 0.55;
@@ -61,6 +60,8 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     protected final int HORIZONTAL_SLIDE_IN_LIMIT = 0;
     protected final int HORIZONTAL_JOYSTICK_MULTIPLIER = 20;
     protected final double SPECIMEN_GRAB = 1;
+
+    protected double currentwristPosition = WRIST_START_POSITION;
 
     protected int horizontalSlideLocation = HORIZONTAL_SLIDE_IN_LIMIT;
     protected DcMotor motorHorizontalSlide = null;
@@ -73,7 +74,7 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     /// Vertical slide
     protected final int TOP_VERTICAL_POSITION = 3200;
     protected final int BOTTOM_VERTICAL_POSITION = 0;
-    protected final int MIDDLE_VERTICAL_POSITION = 1000;
+    protected final int MIDDLE_VERTICAL_POSITION = 600;
 
     protected String whatColor;
 
@@ -81,12 +82,14 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     protected final int VERTICAL_JOYSTICK_MULTIPLIER = 10;
     protected final double TOP_CLAW_OPEN = 1;
     protected final double TOP_CLAW_CLOSE = 0;
+    protected final double TOP_CLAW_ALMOST_CLOSE = 0.4;
     protected final double DROPPING_POSITION = 0.25;
+    protected final double BASKET_DROP = 0.7;
     protected final double UP_POSITION = 0.45;
     protected final double FRONT_POSITION = 0.18;
     protected final double INSIDE_ROBOT_CLAW_VERTICAL = 0;
     protected final double WRIST_START_POSITION_TOP = 0.325;
-    protected final double WRIST_HANG_POSITION = 0.95;
+    protected final double WRIST_HANG_POSITION = 1;
     protected Servo topWrist;
     protected DcMotor motorVerticalSlide = null;
     protected Servo topClaw = null;
@@ -135,7 +138,7 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         topWrist = hardwareMap.get(Servo.class, "topWrist");
         motorVerticalSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorVerticalSlide.setTargetPosition(BOTTOM_VERTICAL_POSITION);
-        motorVerticalSlide.setPower(0.1);
+        motorVerticalSlide.setPower(0.3);
         motorVerticalSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         topArm.setPosition(INSIDE_ROBOT_CLAW_VERTICAL);
         topClaw.setPosition(TOP_CLAW_OPEN);
@@ -154,7 +157,7 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
                     .build();
         }
 
-        telemetry.addData("Status", "Initialized");
+//        telemetry.addData("Status", "Initialized");
         telemetry.update();
     }
 
@@ -198,7 +201,7 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         verticalCurrentPosition -= gamepad2.right_stick_y * VERTICAL_JOYSTICK_MULTIPLIER;
         verticalCurrentPosition = Math.max(verticalCurrentPosition, verticalBottom);
         verticalCurrentPosition = Math.min(verticalCurrentPosition, TOP_VERTICAL_POSITION);
-        telemetry.addData("vericalCurrentPosition!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!: ", verticalCurrentPosition);
+//        telemetry.addData("vericalCurrentPosition!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!: ", verticalCurrentPosition);
         motorVerticalSlide.setTargetPosition(verticalCurrentPosition);
     }
     protected void driveControls(boolean viperUp, boolean backAllowed) {
@@ -215,20 +218,20 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         currentMotorSpeedX = speedIncrease(currentMotorSpeedX, gamepad1.left_stick_x, amountOfChange);
         if ( !viperUp ) {
             currentMotorSpeedY = speedIncrease(currentMotorSpeedY, gamepad1.left_stick_y, amountOfChange);
-            telemetry.addData("!!!!!!!!!!!!!!!!!!!!gamepad", gamepad1.left_stick_y);
+//            telemetry.addData("!!!!!!!!!!!!!!!!!!!!gamepad", gamepad1.left_stick_y);
         } else {
             if (backAllowed) {
-                telemetry.addData("!!!!!!!!!!!!!!!!!!!!gamepad", gamepad1.left_stick_y);
+//                telemetry.addData("!!!!!!!!!!!!!!!!!!!!gamepad", gamepad1.left_stick_y);
                 currentMotorSpeedY = speedIncrease(currentMotorSpeedY, gamepad1.left_stick_y, amountOfChange);
-                telemetry.addData("back", "allowed");
+//                telemetry.addData("back", "allowed");
             } else {
-                telemetry.addData("!!!!!!!!!!!!!!!!!!!!gamepad", gamepad1.left_stick_y);
+//                telemetry.addData("!!!!!!!!!!!!!!!!!!!!gamepad", gamepad1.left_stick_y);
                 if (gamepad1.left_stick_y < 0) {
                     currentMotorSpeedY = speedIncrease(currentMotorSpeedY, gamepad1.left_stick_y, amountOfChange);
-                    telemetry.addData("Going", "forward");
+//                    telemetry.addData("Going", "forward");
                 } else {
                     currentMotorSpeedY = 0;
-                    telemetry.addData("Not", "moving");
+//                    telemetry.addData("Not", "moving");
                 }
             }
         }
@@ -236,56 +239,60 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         // move the robot
         driveTrain.setWeightedDrivePower(
                 new Pose2d(
-                        currentMotorSpeedY,
+                        -currentMotorSpeedY/2,
 
-                        currentMotorSpeedX,
+                        -currentMotorSpeedX/2,
 
-                        currentMotorSpeedHeading
+                        -currentMotorSpeedHeading/5
                 )
         );
         if(gamepad1.dpad_up){
             driveTrain.setWeightedDrivePower(
                     new Pose2d(
-                            -driveSpeed/10,
+                            -driveSpeed/7,
 
                             0,
 
                             0
                     )
             );
+            telemetry.addData("DPAD_UP", "11111111111122222222222222222223333333333333334444444444444");
         }
         if(gamepad1.dpad_down){
             driveTrain.setWeightedDrivePower(
                     new Pose2d(
-                            driveSpeed/10,
+                            driveSpeed/7,
 
                             0,
 
                             0
                     )
             );
+            telemetry.addData("DPAD_DOWN", "11111111111122222222222222222223333333333333334444444444444");
         }
         if(gamepad1.dpad_right){
             driveTrain.setWeightedDrivePower(
                     new Pose2d(
                             0,
 
-                            -driveSpeed/10,
+                            -driveSpeed/7,
 
                             0
                     )
             );
+            telemetry.addData("DPAD_RIGHT", "11111111111122222222222222222223333333333333334444444444444");
         }
         if(gamepad1.dpad_left){
             driveTrain.setWeightedDrivePower(
                     new Pose2d(
                             0,
 
-                            driveSpeed/10,
+                            driveSpeed/7,
 
                             0
                     )
             );
+            telemetry.addData("DPAD_LEFT", "11111111111122222222222222222223333333333333334444444444444");
         }
         telemetry.addData("Y speed", currentMotorSpeedY );
         telemetry.addData("X speed", currentMotorSpeedX );
@@ -321,14 +328,31 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         motorHorizontalSlide.setTargetPosition(horizontalSlideLocation);
     }
 
+    protected void wristControl() {
+        if (gamepad2.b) {
+            currentwristPosition = WRIST_START_POSITION - 0.5;
+        }else if (gamepad2.a) {
+            currentwristPosition = WRIST_START_POSITION;
+        } else if (gamepad2.left_stick_y != 0) {
+            currentwristPosition += gamepad2.left_stick_y/100;
+        }
+        if (currentwristPosition>(WRIST_START_POSITION-0.5)) {
+            currentwristPosition = Math.min(WRIST_START_POSITION,currentwristPosition);
+        }else {
+            currentwristPosition = Math.max(WRIST_START_POSITION-0.5, currentwristPosition);
+        }
+        intakeWrist.setPosition(currentwristPosition);
+        telemetry.addData("Wrist Position", currentwristPosition);
+    }
+
     protected void dumpState() {
-        telemetry.addData("Motor position", motorHorizontalSlide.getCurrentPosition());
-        telemetry.addData("Servo claw", intakeClaw.getPosition());
-        telemetry.addData("Joy Stick:", gamepad2.right_stick_y);
-//        telemetry.addData("Ready for transfer", readyForTransfer);
-        telemetry.addData("Viper position", motorVerticalSlide.getCurrentPosition());
-        telemetry.addData("Viper target position", motorVerticalSlide.getTargetPosition());
-        telemetry.addData("Current Position Variable", verticalCurrentPosition);
+//        telemetry.addData("Motor position", motorHorizontalSlide.getCurrentPosition());
+//        telemetry.addData("Servo claw", intakeClaw.getPosition());
+//        telemetry.addData("Joy Stick:", gamepad2.right_stick_y);
+////        telemetry.addData("Ready for transfer", readyForTransfer);
+//        telemetry.addData("Viper position", motorVerticalSlide.getCurrentPosition());
+//        telemetry.addData("Viper target position", motorVerticalSlide.getTargetPosition());
+//        telemetry.addData("Current Position Variable", verticalCurrentPosition);
 
     }
 
@@ -361,29 +385,6 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         topWrist.setPosition(WRIST_START_POSITION_TOP);
     }
 
-    protected void grab() {
-        String whatColor = detectColor();
-        // both samples and specimens
-        // positions intake arm ready to grab
-        intakeArm.setPosition(ARM_GRAB);
-        // closes the intake claw
-        if ( (whatColor == BLUE_COLOR && !redAlliance)
-                || (whatColor == RED_COLOR && redAlliance)
-        ) {
-            closeIntakeClaw();
-        } else {
-            openIntakeClaw();
-        }
-        sleep(300);
-        leftLight.setPosition(1);
-        leftLight.setPosition(0);
-        intakeWrist.setPosition(WRIST_START_POSITION);
-        // position intake claw inside robot
-        intakeArm.setPosition(INSIDE_ROBOT_CLAW_HORIZONTAL);
-        topArm.setPosition(FRONT_POSITION);
-        // takes the whole arm in
-        horizontalSlideLocation = HORIZONTAL_SLIDE_IN_LIMIT;
-    }
 
     protected void transfer() {
         topArm.setPosition(INSIDE_ROBOT_CLAW_VERTICAL);
