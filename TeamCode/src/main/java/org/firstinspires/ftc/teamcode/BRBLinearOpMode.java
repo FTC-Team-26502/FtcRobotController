@@ -55,7 +55,7 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     /// Horizontal slide
     protected final double INTAKE_CLAW_OPEN = 1;
     protected final double INTAKE_CLAW_CLOSED = 0;
-    protected final double INSIDE_ROBOT_CLAW_HORIZONTAL = 0.05;
+    protected final double INSIDE_ROBOT_CLAW_HORIZONTAL = 0.07;
     protected final double WRIST_START_POSITION = 0.5;
     protected final double ARM_READY_TO_GRAB = 0.55;
     protected final double ARM_GRAB = 0.65;
@@ -242,11 +242,11 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
         // move the robot
         driveTrain.setWeightedDrivePower(
                 new Pose2d(
-                        -currentMotorSpeedY/2,
+                        -currentMotorSpeedY/3,
 
-                        -currentMotorSpeedX/2,
+                        -currentMotorSpeedX/3,
 
-                        -currentMotorSpeedHeading/5
+                        -currentMotorSpeedHeading/4
                 )
         );
         if(gamepad1.dpad_up){
