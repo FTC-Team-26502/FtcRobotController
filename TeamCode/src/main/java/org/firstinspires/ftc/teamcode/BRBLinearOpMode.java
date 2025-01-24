@@ -88,8 +88,8 @@ public abstract class BRBLinearOpMode extends LinearOpMode {
     protected final double UP_POSITION = 0.45;
     protected final double FRONT_POSITION = 0.18;
     protected final double INSIDE_ROBOT_CLAW_VERTICAL = 0;
-    protected final double WRIST_START_POSITION_TOP = 0.325;
-    protected final double WRIST_HANG_POSITION = 1;
+    protected final double WRIST_START_POSITION_TOP = 0;
+    protected final double WRIST_HANG_POSITION = 1-0.325;
     protected Servo topWrist;
     protected DcMotor motorVerticalSlide = null;
     protected Servo topClaw = null;
