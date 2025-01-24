@@ -6,10 +6,10 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous
-public class Comp2AutoSpecimens extends Comp2Specimens{
-    @Override
-    public void runOpMode() throws InterruptedException {
-         //Build Trajectorys:
+public abstract class Comp2AutoSpecimens extends Comp2Specimens{
+    
+    public void loopOpMode() throws InterruptedException {
+         //Build Trajectories:
         Pose2d startPose = new Pose2d(15, -62, Math.toRadians(90));
         driveTrain.setPoseEstimate(startPose);
         Trajectory driveToBarStart = driveTrain.trajectoryBuilder(new Pose2d(), Math.toRadians(90))
